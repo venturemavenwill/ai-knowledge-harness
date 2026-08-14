@@ -29,7 +29,7 @@ aikb check
 | [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0001.json) | capability-procedure | - | 1 |
 | [`knowledge.systems.integrity`](namespaces/knowledge.systems.integrity/manifests/0001.json) | design-substrate | - | 1 |
 | [`reasoning.rule-induction.grid`](namespaces/reasoning.rule-induction.grid/manifests/0001.json) | capability-procedure | - | 1 |
-| [`retrieval.rag.empirical`](namespaces/retrieval.rag.empirical/manifests/0001.json) | empirical-findings | - | 5 |
+| [`retrieval.rag.empirical`](namespaces/retrieval.rag.empirical/manifests/0002.json) | empirical-findings | - | 7 |
 
 ## `engineering.repair.root-cause`
 
@@ -146,6 +146,8 @@ Scoped empirical RAG and retrieval findings
 - **Claims:**
   - [`finding.retrieval.rag.admission-before-scoring@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.admission-before-scoring--1.0.0.md) [reference-only; active] — On the measured SIL retrieval corpus, R@10 remained 0.543 across relation-layer and judge changes because the capped candidate pool admitted only 20 of 35 gold items; uncapped reach was 0.914, so admission rather than scoring was binding.
   - [`finding.retrieval.rag.embedding-reach@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.embedding-reach--1.0.0.md) [reference-only; active] — In the residual SIL single-fact failures, eight of 35 gold items ranked beyond 200 in first-stage embedding retrieval and were unreachable by any downstream reranker.
+  - [`finding.retrieval.rag.exhausted-levers@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.exhausted-levers--1.0.0.md) [reference-only; active] — On the measured SIL corpus, cheap knob sweeps, centroid routing, multi-grain QA blending, cap widening, and structural self-assembly failed to improve the binding retrieval limit and should not be rerun without a changed hypothesis or substrate.
   - [`finding.retrieval.rag.qa-anchoring@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.qa-anchoring--1.0.0.md) [reference-only; active] — On the measured SIL corpus, generating reader-voice questions per unit and indexing those questions moved R@10 from 0.314 to 0.686 by improving candidate admission rather than reranker scoring.
   - [`finding.retrieval.rag.query-class-inversion@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.query-class-inversion--1.0.0.md) [reference-only; active] — On the measured SIL corpus, reader-voice QA expansion was net-negative on single-fact retrieval but improved six of eight multi-hop cases, so the same retrieval lever changed sign by query class.
   - [`finding.retrieval.rag.routing-risk@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.routing-risk--1.0.0.md) [reference-only; active] — On the measured SIL corpus, centroid routing over partitioned indexes scored 0.23 versus a 0.31 unpartitioned floor despite 0.66 oracle headroom, making routing accuracy the dominant failure term.
+  - [`finding.retrieval.rag.structural-ceilings@1.0.0`](namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.structural-ceilings--1.0.0.md) [reference-only; active] — On the measured SIL corpus, three gold items had no proximity neighbors at any tested depth, showing that some retrieval ceilings were corpus-structure properties rather than tunable traversal settings.

@@ -39,7 +39,11 @@ The append-only guarantee is layered:
 3. GitHub branch protection must reject force-pushes and direct bypasses.
 
 The repository can enforce layers 1 and 2 itself. Layer 3 is an external GitHub
-setting and remains explicitly unverified until enabled.
+setting. On 2026-08-14, GitHub's branch-protection API returned HTTP 403 for this
+private personal repository because the account requires GitHub Pro. Until that
+external input changes, the harness installs a local pre-push gate and CI detects
+direct-push violations after the fact, but **remote prevention remains
+unverified**. Do not describe detection as protection.
 
 ## 3. Namespaces and specialization
 
@@ -147,7 +151,8 @@ to run when:
 - GitHub availability and account recovery are external dependencies.
 - A private repository does not replace field-level authorization.
 - Git history is not immutable against an administrator until branch protection
-  and repository governance are configured.
+  and repository governance are configured. The current private-account plan
+  does not permit that setting.
 - Literal search is not semantic retrieval.
 - Curated summaries do not replace retained primary evidence; empirical claims
   must surface when only a summary, rather than the raw result, is present.

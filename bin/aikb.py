@@ -1094,6 +1094,15 @@ def command_check(args: argparse.Namespace) -> int:
         expected = state.registry["repository"]["canonical_remote"]
         if _normalize_remote(origin) != _normalize_remote(expected):
             errors.append(f"origin mismatch: expected {expected}, found {origin}")
+    hooks_path = _run_git(
+        state.repo,
+        ["config", "--local", "--get", "core.hooksPath"],
+        check=False,
+    )
+    if hooks_path.replace("\\", "/").rstrip("/") != ".githooks":
+        errors.append(
+            "local append-only hook is not enabled; run the repository bootstrap"
+        )
     if errors:
         _print_errors(errors)
         print(f"\n{len(errors)} health violation(s)", file=sys.stderr)

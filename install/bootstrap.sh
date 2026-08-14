@@ -151,6 +151,26 @@ if [ "$MODE" != uninstall ]; then
   "$PYTHON" "$BIN_DIR/aikb.py" --repo "$REPO_ROOT" validate --projection
 fi
 
+printf '\n[0b] repository append-only hook\n'
+hooks_path=$(git -C "$REPO_ROOT" config --local --get core.hooksPath 2>/dev/null || true)
+if [ "$MODE" = uninstall ]; then
+  if [ "$hooks_path" = .githooks ]; then
+    git -C "$REPO_ROOT" config --local --unset core.hooksPath
+    wrote 'removed local core.hooksPath'
+  else
+    skip "core.hooksPath (is '$hooks_path')"
+  fi
+elif [ "$MODE" = check ]; then
+  if [ "$hooks_path" = .githooks ]; then
+    ok 'core.hooksPath=.githooks'
+  else
+    missing "core.hooksPath (is '$hooks_path')"
+  fi
+else
+  git -C "$REPO_ROOT" config --local core.hooksPath .githooks
+  wrote 'core.hooksPath=.githooks'
+fi
+
 printf '\n[1] command and repository pointer\n'
 if [ "$MODE" = uninstall ]; then
   if [ -L "$LOCAL_BIN/aikb" ] && [ "$(readlink "$LOCAL_BIN/aikb")" = "$BIN_DIR/aikb" ]; then

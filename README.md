@@ -50,6 +50,8 @@ aikb search "rerank" --namespace retrieval.rag.empirical
 
 Re-running `bootstrap.ps1` repairs drift. `bootstrap.ps1 -Check` writes nothing
 and returns non-zero when an installed surface is missing or stale.
+The bootstrap also enables the repository's `.githooks/pre-push` append-only
+gate.
 
 ## Install on macOS or Linux
 
@@ -111,6 +113,12 @@ Open a pull request. CI rejects:
 - hand-authored confidence numbers;
 - codec-produced fields in pre-encoding claims;
 - stale generated projections.
+
+The private repository's current GitHub plan does not expose server-side branch
+protection. The local pre-push hook prevents normal in-place mutations, and CI
+detects direct-push violations, but GitHub cannot prevent an administrator or
+web edit before CI runs. Upgrade the account plan and require the `validate`
+workflow before treating the remote append-only property as enforced.
 
 To change existing knowledge, add a new claim version with `parent_refs`; do not
 edit the old claim. To change namespace routing or metadata, add the next manifest

@@ -41,9 +41,13 @@ jobs:
       - name: Verify deterministic replay
         run: python bin/aikb.py refresh --check
 
-      - name: Verify append-only history
+      - name: Verify append-only pull request history
         if: github.event_name == 'pull_request'
         run: python scripts/check_append_only.py --base-ref "${{ github.event.pull_request.base.sha }}"
+
+      - name: Detect append-only violations on direct pushes
+        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
+        run: python scripts/check_append_only.py --base-ref "${{ github.event.before }}"
 
       - name: Parse PowerShell installer
         shell: pwsh

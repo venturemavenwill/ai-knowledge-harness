@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -eu
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+if command -v python3 >/dev/null 2>&1; then
+  PYTHON=python3
+elif command -v python >/dev/null 2>&1; then
+  PYTHON=python
+elif command -v py >/dev/null 2>&1; then
+  PYTHON='py -3'
+else
+  printf '%s\n' 'BLOCKED  Python 3.9 or newer must be on PATH to run the pre-push gate.' >&2
+  exit 2
+fi
+
+# shellcheck disable=SC2086
+$PYTHON "$REPO_ROOT/bin/aikb.py" --repo "$REPO_ROOT" validate --projection
+
+if git show-ref --verify --quiet refs/remotes/origin/main; then
+  # shellcheck disable=SC2086
+  $PYTHON "$REPO_ROOT/scripts/check_append_only.py" \
+    --repo "$REPO_ROOT" \
+    --base-ref origin/main
+fi

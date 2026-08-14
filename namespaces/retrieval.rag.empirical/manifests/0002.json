@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "retrieval.rag.empirical",
+  "generation": 2,
+  "supersedes": "manifests/0001.json",
+  "title": "Scoped empirical RAG and retrieval findings",
+  "kind": "empirical-findings",
+  "authority": "reference-only",
+  "extends": null,
+  "consult_when": [
+    "building or debugging RAG, retrieval, vector search, reranking, fusion, or query expansion",
+    "recall is flat and a scoring change is being considered",
+    "splitting an index into namespaces, shards, or routed partitions"
+  ],
+  "entry_points": [
+    "claims/finding.retrieval.rag.admission-before-scoring--1.0.0.md",
+    "claims/finding.retrieval.rag.embedding-reach--1.0.0.md",
+    "claims/finding.retrieval.rag.exhausted-levers--1.0.0.md",
+    "claims/finding.retrieval.rag.qa-anchoring--1.0.0.md",
+    "claims/finding.retrieval.rag.query-class-inversion--1.0.0.md",
+    "claims/finding.retrieval.rag.routing-risk--1.0.0.md",
+    "claims/finding.retrieval.rag.structural-ceilings--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

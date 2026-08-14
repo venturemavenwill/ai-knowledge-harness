@@ -219,6 +219,36 @@ if (-not $Uninstall) {
 }
 
 Say ''
+Say '[0b] repository append-only hook'
+$hooksPath = (& git -C $RepoRoot config --local --get core.hooksPath 2>$null)
+if ($Uninstall) {
+    if ($hooksPath -eq '.githooks') {
+        & git -C $RepoRoot config --local --unset core.hooksPath
+        Changed 'removed local core.hooksPath'
+    }
+    else {
+        Skipped "core.hooksPath (is '$hooksPath')"
+    }
+}
+elseif ($Check) {
+    if ($hooksPath -eq '.githooks') {
+        Good 'core.hooksPath=.githooks'
+    }
+    else {
+        Missing "core.hooksPath (is '$hooksPath')"
+    }
+}
+else {
+    if ($hooksPath -ne '.githooks') {
+        & git -C $RepoRoot config --local core.hooksPath .githooks
+        Changed 'core.hooksPath=.githooks'
+    }
+    else {
+        Good 'core.hooksPath'
+    }
+}
+
+Say ''
 Say '[1] environment'
 $currentRepo = [Environment]::GetEnvironmentVariable('AI_KB_REPO', 'User')
 $currentRoot = [Environment]::GetEnvironmentVariable('AI_KB_ROOT', 'User')

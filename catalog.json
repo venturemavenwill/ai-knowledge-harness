@@ -463,6 +463,27 @@
         },
         {
           "authority": "reference-only",
+          "claim_id": "finding.retrieval.rag.exhausted-levers",
+          "claim_ref": "finding.retrieval.rag.exhausted-levers@1.0.0",
+          "confidence": null,
+          "confidence_method": "reported-summary-primary-artifacts-not-vendored",
+          "expression": "On the measured SIL corpus, cheap knob sweeps, centroid routing, multi-grain QA blending, cap widening, and structural self-assembly failed to improve the binding retrieval limit and should not be rerun without a changed hypothesis or substrate.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.exhausted-levers--1.0.0.md",
+          "sha256": "eae331d49aaefe282fe583aab1c21b54d2d06f1f6b2b4e74b99e1ba371488053",
+          "status": "active",
+          "tags": [
+            "exhausted-levers",
+            "experiments",
+            "negative-results",
+            "rag",
+            "retrieval"
+          ],
+          "version": "1.0.0"
+        },
+        {
+          "authority": "reference-only",
           "claim_id": "finding.retrieval.rag.qa-anchoring",
           "claim_ref": "finding.retrieval.rag.qa-anchoring@1.0.0",
           "confidence": null,
@@ -525,6 +546,28 @@
             "sharding"
           ],
           "version": "1.0.0"
+        },
+        {
+          "authority": "reference-only",
+          "claim_id": "finding.retrieval.rag.structural-ceilings",
+          "claim_ref": "finding.retrieval.rag.structural-ceilings@1.0.0",
+          "confidence": null,
+          "confidence_method": "reported-summary-primary-artifacts-not-vendored",
+          "expression": "On the measured SIL corpus, three gold items had no proximity neighbors at any tested depth, showing that some retrieval ceilings were corpus-structure properties rather than tunable traversal settings.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/retrieval.rag.empirical/claims/finding.retrieval.rag.structural-ceilings--1.0.0.md",
+          "sha256": "752206d4b2b06c14e97adeb12060477c3204a7c94a90bdabf610985f915ebbc5",
+          "status": "active",
+          "tags": [
+            "corpus-structure",
+            "graph-traversal",
+            "rag",
+            "recall",
+            "retrieval",
+            "structural-ceiling"
+          ],
+          "version": "1.0.0"
         }
       ],
       "consult_when": [
@@ -535,9 +578,11 @@
       "entry_points": [
         "claims/finding.retrieval.rag.admission-before-scoring--1.0.0.md",
         "claims/finding.retrieval.rag.embedding-reach--1.0.0.md",
+        "claims/finding.retrieval.rag.exhausted-levers--1.0.0.md",
         "claims/finding.retrieval.rag.qa-anchoring--1.0.0.md",
         "claims/finding.retrieval.rag.query-class-inversion--1.0.0.md",
-        "claims/finding.retrieval.rag.routing-risk--1.0.0.md"
+        "claims/finding.retrieval.rag.routing-risk--1.0.0.md",
+        "claims/finding.retrieval.rag.structural-ceilings--1.0.0.md"
       ],
       "extends": null,
       "kind": "empirical-findings",
@@ -545,10 +590,10 @@
         "retrieval.rag.empirical"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/retrieval.rag.empirical/manifests/0001.json",
-        "sha256": "0e31a439b29904fa6145f407f015cc5fc37522b524ebd6268938648b855b77cc",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/retrieval.rag.empirical/manifests/0002.json",
+        "sha256": "dd9bffe1a748fe33ff233c4134040dd103ece496b9ed30938b441098221a45fb",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -556,6 +601,12 @@
           "path": "namespaces/retrieval.rag.empirical/manifests/0001.json",
           "sha256": "0e31a439b29904fa6145f407f015cc5fc37522b524ebd6268938648b855b77cc",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/retrieval.rag.empirical/manifests/0002.json",
+          "sha256": "dd9bffe1a748fe33ff233c4134040dd103ece496b9ed30938b441098221a45fb",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "retrieval.rag.empirical",
