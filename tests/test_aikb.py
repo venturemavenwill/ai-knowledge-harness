@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import shutil
@@ -8,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPO = Path(__file__).resolve().parents[1]
 CLI = REPO / "bin" / "aikb.py"
@@ -17,9 +19,11 @@ NEW_NAMESPACE = REPO / "scripts" / "new_namespace.py"
 def run_cli(
     *args: str, repo: Path = REPO, env: dict[str, str] | None = None
 ) -> subprocess.CompletedProcess[str]:
-    # Network-touching auto-update stays off unless a test opts in.
+    # Network-touching auto-update and home-directory surface work stay off
+    # unless a test opts in.
     environment = os.environ.copy()
     environment["AIKB_AUTO_UPDATE"] = "off"
+    environment["AIKB_SURFACE_CHECK"] = "off"
     if env:
         environment.update(env)
     return subprocess.run(
@@ -172,7 +176,20 @@ class AutoUpdateTests(unittest.TestCase):
             applied = run_cli("update", "--all", repo=repo)
             self.assertEqual(applied.returncode, 0, applied.stderr)
             self.assertEqual(head_of(repo), published)
-            self.assertIn("re-run the installer bootstrap", applied.stdout)
+            # AIKB_SURFACE_CHECK=off in tests, so the installer is never run
+            # against the real home directory; the reminder is printed instead.
+            self.assertIn("installer bootstrap", applied.stdout)
+
+    def test_update_can_skip_the_installer(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            published = publish_upstream_commit(repo, CODE_FILE, "tooling change")
+
+            applied = run_cli("update", "--all", "--no-install", repo=repo)
+
+            self.assertEqual(applied.returncode, 0, applied.stderr)
+            self.assertEqual(head_of(repo), published)
+            self.assertNotIn("installer bootstrap", applied.stdout)
 
     def test_update_check_reports_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -190,6 +207,90 @@ class AutoUpdateTests(unittest.TestCase):
             current = run_cli("update", "--check", repo=repo)
             self.assertEqual(current.returncode, 0, current.stderr)
             self.assertIn("already current", current.stdout)
+
+
+class SurfaceDriftTests(unittest.TestCase):
+    """Installed copies are compared against this checkout, read-only."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        spec = importlib.util.spec_from_file_location("aikb_cli", CLI)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"cannot import {CLI}")
+        module = importlib.util.module_from_spec(spec)
+        # dataclass resolution requires the module to be importable by name.
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        cls.cli = module
+
+    def stale_for(self, home: Path, enabled: bool = True) -> list[str]:
+        setting = "on" if enabled else "off"
+        with mock.patch.dict(os.environ, {"AIKB_SURFACE_CHECK": setting}):
+            with mock.patch("pathlib.Path.home", return_value=home):
+                return self.cli._stale_surfaces(REPO)
+
+    @staticmethod
+    def install_skill(home: Path, text: str) -> Path:
+        target = home / ".copilot" / "skills" / "ai-knowledge-base" / "SKILL.md"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8", newline="\n")
+        return target
+
+    def test_absent_destinations_are_not_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertEqual(self.stale_for(Path(temp)), [])
+
+    def test_matching_installation_is_clean(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            skill = (REPO / "surfaces" / "skill" / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            self.install_skill(home, skill)
+            block = (REPO / "surfaces" / "agents" / "AGENTS-block.md").read_text(
+                encoding="utf-8"
+            )
+            (home / "AGENTS.md").write_text(
+                f"# my notes\n\n{block}\n", encoding="utf-8", newline="\n"
+            )
+
+            self.assertEqual(self.stale_for(home), [])
+
+    def test_modified_skill_copy_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            self.install_skill(home, "# stale copy\n")
+
+            self.assertIn(
+                ".copilot/skills/ai-knowledge-base/SKILL.md", self.stale_for(home)
+            )
+
+    def test_missing_managed_block_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            (home / "AGENTS.md").write_text(
+                "# unrelated content only\n", encoding="utf-8", newline="\n"
+            )
+
+            self.assertIn("AGENTS.md", self.stale_for(home))
+
+    def test_line_endings_alone_are_not_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            skill = (REPO / "surfaces" / "skill" / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            target = self.install_skill(home, skill)
+            target.write_bytes(skill.replace("\n", "\r\n").encode("utf-8"))
+
+            self.assertEqual(self.stale_for(home), [])
+
+    def test_surface_check_can_be_disabled(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            self.install_skill(home, "# stale copy\n")
+
+            self.assertEqual(self.stale_for(home, enabled=False), [])
 
 
 class HarnessTests(unittest.TestCase):

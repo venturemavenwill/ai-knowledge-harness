@@ -70,6 +70,10 @@ on stderr as `UPDATE ...` and deliberately **not** applied. When that appears:
 
 Set `AIKB_AUTO_UPDATE=off` to disable the check entirely.
 
+`aikb check` also reports installed copies of these surfaces that have drifted
+away from the checkout. When it does, tell the operator to re-run the installer
+bootstrap so the instructions you are reading match the repository.
+
 ## Repository maintenance
 
 Read commands are safe from any project. `aikb sync`, `aikb update`, and

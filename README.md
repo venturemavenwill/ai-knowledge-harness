@@ -155,8 +155,11 @@ aikb update --check    # report only; non-zero when an update is available
 aikb update --all      # apply code and surface changes after review
 ```
 
-Re-run the installer bootstrap after applying a code or surface update so the
-installed agent surfaces match the repository.
+Applying with `--all` also reinstalls your agent surfaces from the updated
+checkout, so `~/.copilot/skills/`, `~/AGENTS.md`, `~/.claude/CLAUDE.md`, and the
+other installed copies stay consistent with the code you just accepted. Pass
+`--no-install` to skip that step. `aikb check` independently reports any
+installed copy that has drifted away from the checkout.
 
 Two environment variables control the behavior:
 
@@ -164,6 +167,8 @@ Two environment variables control the behavior:
   locked-down or air-gapped environments; `all` only if you accept unattended
   code updates.
 - `AIKB_UPDATE_INTERVAL` — seconds between remote checks, default `86400`.
+- `AIKB_SURFACE_CHECK` — `on` (default) or `off` to skip installed-surface
+  comparison and reinstallation.
 
 ## For AI agents and automation
 

@@ -190,6 +190,25 @@ restores unattended code updates for operators who explicitly accept that
 tradeoff; it is not the default because the canonical repository accepts
 worldwide contributions.
 
+### 8b. The installed copy
+
+Installation has two layers: the Git checkout, and copies of `surfaces/`
+written into agent-specific locations such as `~/.copilot/skills/`,
+`~/AGENTS.md`, `~/.claude/CLAUDE.md`, and editor profile directories. A
+checkout that advances without refreshing those copies leaves agents reading
+superseded instructions.
+
+Consent applies once, at the boundary where content enters the machine.
+Propagating an already-accepted checkout to the installed locations completes
+that same decision rather than making a new one, so `aikb update --all` runs
+the platform installer afterwards. `--no-install` opts out.
+
+`aikb check` compares installed copies against the checkout and reports drift.
+It only reads, only inspects destinations that are stable across platforms, and
+ignores destinations that are absent, because absence means the surface was
+never installed there rather than that it is stale. Comparison normalizes line
+endings so a CRLF checkout is not mistaken for divergence.
+
 ## 9. Collaborative evolution
 
 Machine-wide agent surfaces include a bounded feedback loop for harness

@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -66,6 +67,25 @@ DEFAULT_UPDATE_INTERVAL_SECONDS = 86400
 AUTO_UPDATE_MODES = frozenset({"off", "knowledge", "all"})
 AUTO_UPDATE_COMMANDS = frozenset(
     {"list", "index", "search", "show", "lineage", "status", "check"}
+)
+
+# Installed copies that live at stable, platform-independent locations under
+# the user's home directory. Editor-profile paths vary per platform and are
+# left to the installer.
+SURFACE_FILE_TARGETS = (
+    (
+        "surfaces/skill/SKILL.md",
+        (
+            ".copilot/skills/ai-knowledge-base/SKILL.md",
+            ".agents/skills/ai-knowledge-base/SKILL.md",
+        ),
+    ),
+)
+SURFACE_BLOCK_TARGETS = (
+    (
+        "surfaces/agents/AGENTS-block.md",
+        ("AGENTS.md", ".codex/AGENTS.md", ".claude/CLAUDE.md", ".gemini/GEMINI.md"),
+    ),
 )
 
 
@@ -1025,6 +1045,111 @@ def _is_knowledge_path(path: str) -> bool:
     return path in KNOWLEDGE_ROOT_FILES or path.startswith(KNOWLEDGE_PATH_PREFIX)
 
 
+def _surface_checks_enabled() -> bool:
+    value = os.environ.get("AIKB_SURFACE_CHECK", "on").strip().lower()
+    return value not in {"off", "0", "false", "no"}
+
+
+def _normalized(text: str) -> str:
+    return text.replace("\r\n", "\n")
+
+
+def _stale_surfaces(repo: Path) -> list[str]:
+    """Installed copies that exist but no longer match this checkout.
+
+    A destination that is absent is simply not installed there and is never
+    reported. Only genuine drift is surfaced.
+    """
+    if not _surface_checks_enabled():
+        return []
+    try:
+        home = Path.home()
+    except (OSError, RuntimeError):
+        return []
+    stale: list[str] = []
+
+    for source_relative, destinations in SURFACE_FILE_TARGETS:
+        source = repo / source_relative
+        try:
+            expected = _normalized(source.read_text(encoding="utf-8"))
+        except OSError:
+            continue
+        for destination_relative in destinations:
+            destination = home / destination_relative
+            try:
+                if destination.is_file() and (
+                    _normalized(destination.read_text(encoding="utf-8")) != expected
+                ):
+                    stale.append(destination_relative)
+            except OSError:
+                continue
+
+    for source_relative, destinations in SURFACE_BLOCK_TARGETS:
+        source = repo / source_relative
+        try:
+            block = _normalized(source.read_text(encoding="utf-8")).strip()
+        except OSError:
+            continue
+        if not block:
+            continue
+        for destination_relative in destinations:
+            destination = home / destination_relative
+            try:
+                if destination.is_file() and (
+                    block not in _normalized(destination.read_text(encoding="utf-8"))
+                ):
+                    stale.append(destination_relative)
+            except OSError:
+                continue
+
+    return stale
+
+
+def _bootstrap_invocation(repo: Path) -> list[str] | None:
+    if os.name == "nt":
+        script = repo / "install" / "bootstrap.ps1"
+        if not script.is_file():
+            return None
+        for executable in ("pwsh", "powershell"):
+            resolved = shutil.which(executable)
+            if resolved:
+                return [
+                    resolved,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(script),
+                ]
+        return None
+    script = repo / "install" / "bootstrap.sh"
+    if not script.is_file():
+        return None
+    shell = shutil.which("sh")
+    return [shell, str(script)] if shell else None
+
+
+def _run_bootstrap(repo: Path) -> bool | None:
+    """Re-install agent surfaces from this checkout. None when unavailable."""
+    if not _surface_checks_enabled():
+        return None
+    invocation = _bootstrap_invocation(repo)
+    if invocation is None:
+        return None
+    try:
+        completed = subprocess.run(
+            invocation,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=300,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return completed.returncode == 0
+
+
 def _incoming_paths(repo: Path, local: str, remote: str) -> list[str]:
     output = _run_git(repo, ["diff", "--name-only", f"{local}..{remote}"])
     return sorted({line.strip() for line in output.splitlines() if line.strip()})
@@ -1452,6 +1577,13 @@ def command_check(args: argparse.Namespace) -> int:
         errors.append(
             "local append-only hook is not enabled; run the repository bootstrap"
         )
+    stale_surfaces = _stale_surfaces(state.repo)
+    if stale_surfaces:
+        errors.append(
+            "installed agent surfaces no longer match this checkout ("
+            + ", ".join(f"~/{path}" for path in sorted(stale_surfaces))
+            + "); re-run the installer bootstrap"
+        )
     if errors:
         _print_errors(errors)
         print(f"\n{len(errors)} health violation(s)", file=sys.stderr)
@@ -1560,8 +1692,21 @@ def command_update(args: argparse.Namespace) -> int:
     _require_valid_state(repo, projection=True)
     print()
     print(f"OK    updated {remote_name}/{default_branch} to {remote[:7]}")
-    if other:
-        print("NOTE  installed surfaces may be stale; re-run the installer bootstrap")
+
+    # The operator consented to this content by applying it. Propagating it to
+    # the installed locations completes that same decision rather than making
+    # a new one.
+    if other and not args.no_install:
+        outcome = _run_bootstrap(repo)
+        if outcome is True:
+            print("OK    reinstalled agent surfaces from the updated checkout")
+        elif outcome is False:
+            print(
+                "WARN  installer bootstrap reported a problem; run it manually",
+                file=sys.stderr,
+            )
+        else:
+            print("NOTE  run the installer bootstrap to refresh installed surfaces")
     return 0
 
 
@@ -1670,6 +1815,11 @@ def _parser() -> argparse.ArgumentParser:
         "--all",
         action="store_true",
         help="also apply changes to executable code and installed surfaces",
+    )
+    update_parser.add_argument(
+        "--no-install",
+        action="store_true",
+        help="do not reinstall agent surfaces after applying the update",
     )
     update_parser.set_defaults(handler=command_update)
     return parser
