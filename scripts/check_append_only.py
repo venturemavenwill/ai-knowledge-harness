@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 import sys
@@ -40,6 +41,43 @@ def _git(repo: Path, args: Sequence[str]) -> str:
     return completed.stdout
 
 
+def _normalize_remote(remote: str) -> str:
+    value = remote.strip().rstrip("/")
+    ssh_match = re.fullmatch(r"git@github\.com:(.+)", value)
+    if ssh_match:
+        value = f"https://github.com/{ssh_match.group(1)}"
+    ssh_url_match = re.fullmatch(r"ssh://git@github\.com/(.+)", value)
+    if ssh_url_match:
+        value = f"https://github.com/{ssh_url_match.group(1)}"
+    return value.removesuffix(".git").rstrip("/").lower()
+
+
+def _canonical_base(repo: Path) -> str:
+    registry_path = repo / "registry.json"
+    try:
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        expected = registry["repository"]["canonical_remote"]
+        default_branch = registry["repository"]["default_branch"]
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise GateError(f"cannot read canonical repository data from {registry_path}") from exc
+    if not isinstance(expected, str) or not isinstance(default_branch, str):
+        raise GateError(f"invalid canonical repository data in {registry_path}")
+
+    matches: list[str] = []
+    for remote in _git(repo, ["remote"]).splitlines():
+        url = _git(repo, ["remote", "get-url", remote])
+        if _normalize_remote(url) == _normalize_remote(expected):
+            matches.append(remote)
+    if not matches:
+        raise GateError(f"no configured remote matches {expected}")
+
+    priority = {"origin": 0, "upstream": 1}
+    remote = min(matches, key=lambda name: (priority.get(name, 2), name))
+    base_ref = f"{remote}/{default_branch}"
+    _git(repo, ["rev-parse", "--verify", base_ref])
+    return base_ref
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Ensure existing namespace manifests and claims were not changed"
@@ -47,8 +85,10 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--repo", type=Path, default=_repo_default())
     parser.add_argument(
         "--base-ref",
-        required=True,
-        help="merge-base reference, for example origin/main or a base commit SHA",
+        help=(
+            "merge-base reference, for example origin/main or a base commit SHA; "
+            "defaults to the configured canonical remote and branch"
+        ),
     )
     return parser
 
@@ -87,7 +127,9 @@ def check(repo: Path, base_ref: str) -> list[str]:
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        violations = check(args.repo.resolve(), args.base_ref)
+        repo = args.repo.resolve()
+        base_ref = args.base_ref or _canonical_base(repo)
+        violations = check(repo, base_ref)
     except GateError as exc:
         print(f"FAIL  {exc}", file=sys.stderr)
         return 2

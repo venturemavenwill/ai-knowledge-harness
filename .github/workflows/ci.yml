@@ -11,13 +11,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: validate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         os:
           - ubuntu-latest
+          - macos-latest
           - windows-latest
     runs-on: ${{ matrix.os }}
 
@@ -67,6 +73,28 @@ jobs:
       - name: Parse POSIX installer
         if: runner.os != 'Windows'
         run: sh -n install/bootstrap.sh
+
+      - name: Verify POSIX installer lifecycle
+        if: runner.os != 'Windows'
+        run: |
+          set -eu
+          install/bootstrap.sh
+          # The installed symlink must reach the CLI inside the checkout.
+          "$HOME/.local/bin/aikb" --repo "$PWD" list
+          "$HOME/.local/bin/aikb" --repo "$PWD" validate --projection
+          install/bootstrap.sh --check
+          install/bootstrap.sh --uninstall
+
+      - name: Verify Windows installer lifecycle
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./install/bootstrap.ps1
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          ./install/bootstrap.ps1 -Check
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          ./install/bootstrap.ps1 -Uninstall
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Check whitespace
         run: git diff --check

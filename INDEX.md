@@ -27,6 +27,7 @@ aikb check
 | [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0001.json) | working-discipline | - | 1 |
 | [`guard.autonomy.tool-intent`](namespaces/guard.autonomy.tool-intent/manifests/0001.json) | capability-procedure | - | 1 |
 | [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0001.json) | capability-procedure | - | 1 |
+| [`knowledge.harness.evolution`](namespaces/knowledge.harness.evolution/manifests/0001.json) | working-discipline | knowledge.systems.integrity | 1 |
 | [`knowledge.systems.integrity`](namespaces/knowledge.systems.integrity/manifests/0001.json) | design-substrate | - | 1 |
 | [`reasoning.rule-induction.grid`](namespaces/reasoning.rule-induction.grid/manifests/0001.json) | capability-procedure | - | 1 |
 | [`retrieval.rag.empirical`](namespaces/retrieval.rag.empirical/manifests/0002.json) | empirical-findings | - | 7 |
@@ -102,6 +103,20 @@ Financial evidence synthesis
   - reconciling conflicting financial figures or performing expected-value analysis
 - **Claims:**
   - [`spec.knowledge.finance.evidence-synthesis@1.0.0`](namespaces/knowledge.finance.evidence-synthesis/claims/spec.knowledge.finance.evidence-synthesis--1.0.0.md) [hand-authored; active] — A financial figure is evidence only with its locator, period, unit, scale, and accounting basis; conflicting figures remain a preserved set; probabilities name their source; and each conclusion clause maps to anchored evidence.
+
+## `knowledge.harness.evolution`
+
+Collaborative harness evolution
+
+- **Kind:** working-discipline
+- **Authority:** hand-authored-unmeasured
+- **Extends:** knowledge.systems.integrity
+- **Lineage:** knowledge.systems.integrity -> knowledge.harness.evolution
+- **Consult when:**
+  - AI-assisted work exposes a reusable gap, weakness, conflict, or verified procedure that may improve the shared harness
+  - contributing knowledge or tooling learned with different models, tools, or grounding sources
+- **Claims:**
+  - [`method.knowledge.harness.evidence-gated-improvement@1.0.0`](namespaces/knowledge.harness.evolution/claims/method.knowledge.harness.evidence-gated-improvement--1.0.0.md) [hand-authored; active] — A shared AI knowledge harness improves safely when agents convert verified reusable gaps into isolated, evidence-retaining, append-only pull requests while excluding sensitive and project-specific material.
 
 ## `knowledge.systems.integrity`
 

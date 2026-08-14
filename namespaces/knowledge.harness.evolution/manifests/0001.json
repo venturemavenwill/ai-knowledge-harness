@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "knowledge.harness.evolution",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Collaborative harness evolution",
+  "kind": "working-discipline",
+  "authority": "hand-authored-unmeasured",
+  "extends": "knowledge.systems.integrity",
+  "consult_when": [
+    "AI-assisted work exposes a reusable gap, weakness, conflict, or verified procedure that may improve the shared harness",
+    "contributing knowledge or tooling learned with different models, tools, or grounding sources"
+  ],
+  "entry_points": [
+    "claims/method.knowledge.harness.evidence-gated-improvement--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

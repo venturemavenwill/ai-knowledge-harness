@@ -1,7 +1,19 @@
 #!/usr/bin/env sh
 set -eu
 
-SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+# Resolve symlinks so an installed link (for example ~/.local/bin/aikb) still
+# finds aikb.py inside the repository checkout. Avoids `readlink -f`, which is
+# not portable to older macOS.
+TARGET=$0
+while [ -L "$TARGET" ]; do
+  LINK=$(readlink "$TARGET")
+  case $LINK in
+    /*) TARGET=$LINK ;;
+    *) TARGET=$(dirname -- "$TARGET")/$LINK ;;
+  esac
+done
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$TARGET")" && pwd -P)
 
 if command -v python3 >/dev/null 2>&1; then
   exec python3 "$SCRIPT_DIR/aikb.py" "$@"

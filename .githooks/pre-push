@@ -15,11 +15,10 @@ else
 fi
 
 # shellcheck disable=SC2086
+$PYTHON "$REPO_ROOT/scripts/check_push_policy.py" --repo "$REPO_ROOT"
+
+# shellcheck disable=SC2086
 $PYTHON "$REPO_ROOT/bin/aikb.py" --repo "$REPO_ROOT" validate --projection
 
-if git show-ref --verify --quiet refs/remotes/origin/main; then
-  # shellcheck disable=SC2086
-  $PYTHON "$REPO_ROOT/scripts/check_append_only.py" \
-    --repo "$REPO_ROOT" \
-    --base-ref origin/main
-fi
+# shellcheck disable=SC2086
+$PYTHON "$REPO_ROOT/scripts/check_append_only.py" --repo "$REPO_ROOT"

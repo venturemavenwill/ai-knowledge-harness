@@ -1,11 +1,11 @@
 ---
 name: ai-knowledge-base
-description: Machine-wide, Git-backed knowledge procedures and scoped findings. Use before non-read actions, software repair, formal grid rule induction, financial evidence synthesis, verification decisions, RAG design, or knowledge-system design.
+description: Machine-wide, Git-backed knowledge procedures and scoped findings. Use before non-read actions, software repair, formal grid rule induction, financial evidence synthesis, verification decisions, RAG design, knowledge-system design, or contributing a verified reusable harness improvement.
 ---
 
 # Machine-wide AI knowledge base
 
-Canonical content is the private Git checkout identified by `AI_KB_REPO`.
+Canonical content is the Git checkout identified by `AI_KB_REPO`.
 If that variable is absent, use the `aikb` command installed on `PATH`.
 
 ## Trust boundary
@@ -27,6 +27,7 @@ aikb show namespaces/guard.autonomy.tool-intent/claims/spec.guard.autonomy.tool-
 aikb lineage engineering.repair.root-cause.python-packages
 aikb status
 aikb check
+aikb contribute concise-gap-slug
 ```
 
 `show` is confined to knowledge namespaces and documented entry points.
@@ -45,6 +46,7 @@ aikb check
 | Declaring work done/fixed or writing a gate | `engineering.verification.external-evidence` |
 | Building/debugging RAG or routed retrieval | `retrieval.rag.empirical` |
 | Designing knowledge storage, conflict, replay, or GC | `knowledge.systems.integrity` |
+| Verified work exposes a reusable harness gap | `knowledge.harness.evolution` |
 
 Search before asserting. Preserve each claim's authority, evidence status,
 scope, provenance, and limitations. A `reported-summary` is not promoted to a
@@ -57,5 +59,12 @@ the checkout and must be reconciled with current operator intent.
 
 - `aikb sync` refuses dirty worktrees and uses only `git pull --ff-only`.
 - `aikb refresh --check` detects projection drift without writing.
+- `aikb contribute <slug>` creates an isolated improvement worktree from the
+  canonical remote; follow `aikb show CONTRIBUTING.md`.
 - New knowledge is added through Git pull requests as new namespace manifests or
   claim files. Existing canonical records are append-only.
+
+Do not interrupt primary work for speculative harness changes. Contribute only
+when current operator intent permits it and the result can retain non-sensitive
+evidence. Never transfer secrets, customer data, private project source, or
+licensed material into the harness.

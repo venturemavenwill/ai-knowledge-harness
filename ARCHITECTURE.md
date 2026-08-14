@@ -21,7 +21,7 @@ or delivery-time authorization gate.
 ## 2. Canonical record and projections
 
 The canonical record is the set of files under `namespaces/`, ordered by the Git
-commit graph on the protected default branch.
+commit graph on the canonical default branch.
 
 - `namespaces/<id>/manifests/<generation>.json` is append-only namespace
   metadata. A later generation names the prior manifest in `supersedes`.
@@ -39,11 +39,11 @@ The append-only guarantee is layered:
 3. GitHub branch protection must reject force-pushes and direct bypasses.
 
 The repository can enforce layers 1 and 2 itself. Layer 3 is an external GitHub
-setting. On 2026-08-14, GitHub's branch-protection API returned HTTP 403 for this
-private personal repository because the account requires GitHub Pro. Until that
-external input changes, the harness installs a local pre-push gate and CI detects
-direct-push violations after the fact, but **remote prevention remains
-unverified**. Do not describe detection as protection.
+setting. The public canonical repository protects `main` with required pull
+requests, required cross-platform CI, linear history, resolved review
+conversations, and force-push and deletion restrictions, enforced for
+administrators as well. The harness also installs a local pre-push gate so
+contributors receive earlier feedback.
 
 ## 3. Namespaces and specialization
 
@@ -139,6 +139,20 @@ The checkout remains the source of truth. Installers do not copy knowledge into
 another database. They distribute only small routing surfaces and command
 wrappers, then point machine-wide agent runtimes back to this checkout.
 
+Windows uses `install/bootstrap.ps1`; macOS and Linux use
+`install/bootstrap.sh`. Both are idempotent and support `--check` and
+`--uninstall`. Each configures `AI_KB_REPO` and places the harness `bin`
+directory on the user's `PATH` — through user environment variables on Windows
+and through a marked block in the login shell's rc file on macOS and Linux.
+
+The POSIX `bin/aikb` wrapper resolves symlinks before locating `aikb.py`, so an
+installed link such as `~/.local/bin/aikb` still executes the CLI inside the
+checkout. It avoids `readlink -f`, which is not portable to older macOS.
+
+Canonical records are LF-only and validation rejects a carriage return in any
+manifest or claim. A mixed Windows, macOS, and Linux team therefore cannot
+produce divergent record hashes for identical knowledge.
+
 Updating knowledge is a fast-forward Git pull (`aikb sync`). The command refuses
 to run when:
 
@@ -146,13 +160,43 @@ to run when:
 - `origin` differs from the canonical remote;
 - the pull would require a merge or history rewrite.
 
-## 9. Non-goals and residuals
+## 9. Collaborative evolution
+
+Machine-wide agent surfaces include a bounded feedback loop for harness
+improvements. After primary work is verified, an agent may identify a reusable
+gap, but it may mutate this repository only when current operator intent permits
+that work. The `knowledge.harness.evolution` namespace defines the evidence and
+safety threshold.
+
+`aikb contribute <slug>` fetches the canonical default branch and creates an
+isolated `improvement/<slug>` Git worktree. The canonical checkout remains clean
+and readable while the proposed change is developed. Pull requests preserve the
+observed gap, model and tool context, retained evidence, review disagreement,
+and executable checks.
+
+Different models are independent review surfaces, not independent primary
+measurements. Model consensus cannot promote an unmeasured claim. Sensitive,
+project-specific, or unlicensed material is excluded rather than generalized by
+an agent.
+
+The public repository accepts issue reports and pull requests from forks.
+`aikb contribute` finds the configured remote whose URL matches the canonical
+remote in `registry.json`, so a maintainer clone can use `origin` while a fork
+clone can use `upstream`. Contribution branches default to the contributor's
+`origin`, with `--push-remote` available for other layouts. A maintainer
+approves every contribution they did not author. While the project has a single
+maintainer, GitHub cannot require a second approver for that maintainer's own
+pull requests; those changes are gated by CI, the append-only history check,
+and public visibility instead. Do not describe that as independent review.
+
+## 10. Non-goals and residuals
 
 - GitHub availability and account recovery are external dependencies.
-- A private repository does not replace field-level authorization.
-- Git history is not immutable against an administrator until branch protection
-  and repository governance are configured. The current private-account plan
-  does not permit that setting.
+- Repository access does not replace field-level authorization. Public
+  contributions must contain only information safe for unrestricted disclosure.
+- Git history is not immutable against a repository administrator. Branch
+  protection and governance reduce that risk but do not eliminate account
+  compromise or malicious administration.
 - Literal search is not semantic retrieval.
 - Curated summaries do not replace retained primary evidence; empirical claims
   must surface when only a summary, rather than the raw result, is present.

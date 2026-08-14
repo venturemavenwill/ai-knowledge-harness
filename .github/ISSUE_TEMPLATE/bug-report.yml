@@ -1,0 +1,70 @@
+name: Bug report
+description: Report a reproducible defect in the CLI, installers, validation, or agent surfaces.
+title: "[bug]: "
+labels:
+  - bug
+  - needs-triage
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve the harness. Everything in this issue is public.
+        Remove credentials, customer data, private source, personal data, and unlicensed material.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - CLI and retrieval
+        - Windows installer
+        - macOS or Linux installer
+        - Validation or generated projections
+        - Git contribution workflow
+        - Agent instruction surfaces
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: List the smallest sequence of commands or inputs that reproduces the defect.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: Include redacted output and exit codes when available.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Python version, Git version, and relevant AI tool.
+      placeholder: Windows 11; Python 3.12; Git 2.50; GitHub Copilot
+    validations:
+      required: true
+  - type: textarea
+    id: ai_context
+    attributes:
+      label: AI assistance
+      description: If an AI tool generated or transformed relevant commands or evidence, identify it here.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched open issues and discussions for this defect.
+          required: true
+        - label: This report contains no secrets or material that cannot be made public.
+          required: true

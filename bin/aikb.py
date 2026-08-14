@@ -18,6 +18,7 @@ SCHEMA_VERSION = 1
 NAMESPACE_PATTERN = re.compile(r"^[a-z0-9]+(?:[._-][a-z0-9]+)*$")
 SEMVER_PATTERN = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 DATE_PATTERN = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+CONTRIBUTION_SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:[._-][a-z0-9]+)*$")
 CLAIM_HEADER_PATTERN = re.compile(r"\A<!-- aikb\r?\n(.*?)\r?\n-->\r?\n?", re.DOTALL)
 CODEC_FIELDS = frozenset({"codec_version", "z", "z_ref"})
 MANIFEST_KINDS = frozenset(
@@ -37,7 +38,22 @@ EVIDENCE_CLASSES = frozenset(
     {"primary-result", "reported-summary", "design-reference", "operator-authored"}
 )
 ALLOWED_SHOW_ROOT_FILES = frozenset(
-    {"ARCHITECTURE.md", "INDEX.md", "README.md", "catalog.json", "registry.json"}
+    {
+        "AGENTS.md",
+        "ARCHITECTURE.md",
+        "CITATION.cff",
+        "CODE_OF_CONDUCT.md",
+        "CONTRIBUTING.md",
+        "GOVERNANCE.md",
+        "INDEX.md",
+        "LICENSE",
+        "README.md",
+        "SECURITY.md",
+        "SUPPORT.md",
+        "catalog.json",
+        "llms.txt",
+        "registry.json",
+    }
 )
 
 
@@ -91,11 +107,22 @@ def _repo_default() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
-def _read_json(path: Path) -> dict[str, Any]:
+def _read_canonical_text(path: Path) -> str:
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
+        raw = path.read_bytes()
     except FileNotFoundError as exc:
         raise HarnessError(f"missing required file: {path}") from exc
+    if b"\r" in raw:
+        raise HarnessError(f"canonical text must use LF line endings: {path}")
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise HarnessError(f"canonical text is not UTF-8: {path}") from exc
+
+
+def _read_json(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(_read_canonical_text(path))
     except json.JSONDecodeError as exc:
         raise HarnessError(f"invalid JSON at {path}:{exc.lineno}:{exc.colno}: {exc.msg}") from exc
     if not isinstance(value, dict):
@@ -138,10 +165,7 @@ def _safe_existing_path(root: Path, relative: str, label: str) -> Path:
 
 
 def _extract_claim(path: Path) -> ClaimRecord:
-    try:
-        text = path.read_text(encoding="utf-8")
-    except UnicodeDecodeError as exc:
-        raise HarnessError(f"claim is not UTF-8: {path}") from exc
+    text = _read_canonical_text(path)
     match = CLAIM_HEADER_PATTERN.match(text)
     if not match:
         raise HarnessError(f"claim is missing the '<!-- aikb' JSON header: {path}")
@@ -889,11 +913,41 @@ def _run_git(repo: Path, args: Sequence[str], *, check: bool = True) -> str:
 
 
 def _normalize_remote(remote: str) -> str:
-    value = remote.strip().removesuffix(".git")
+    value = remote.strip().rstrip("/")
     ssh_match = re.fullmatch(r"git@github\.com:(.+)", value)
     if ssh_match:
         value = f"https://github.com/{ssh_match.group(1)}"
-    return value.rstrip("/").lower()
+    ssh_url_match = re.fullmatch(r"ssh://git@github\.com/(.+)", value)
+    if ssh_url_match:
+        value = f"https://github.com/{ssh_url_match.group(1)}"
+    return value.removesuffix(".git").rstrip("/").lower()
+
+
+def _remote_names(repo: Path) -> list[str]:
+    return sorted(name for name in _run_git(repo, ["remote"]).splitlines() if name)
+
+
+def _canonical_remote(repo: Path, expected: str) -> tuple[str, str]:
+    matches: list[tuple[str, str]] = []
+    for name in _remote_names(repo):
+        url = _run_git(repo, ["remote", "get-url", name])
+        if _normalize_remote(url) == _normalize_remote(expected):
+            matches.append((name, url))
+    if not matches:
+        raise HarnessError(
+            f"canonical remote missing: expected a configured remote for {expected}; "
+            "fork clones should keep the source repository as 'upstream'"
+        )
+    priority = {"origin": 0, "upstream": 1}
+    return min(matches, key=lambda match: (priority.get(match[0], 2), match[0]))
+
+
+def _github_repository(remote: str) -> str | None:
+    normalized = _normalize_remote(remote)
+    prefix = "https://github.com/"
+    if normalized.startswith(prefix):
+        return normalized.removeprefix(prefix)
+    return None
 
 
 def command_list(args: argparse.Namespace) -> int:
@@ -1065,6 +1119,107 @@ def command_refresh(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_contribute(args: argparse.Namespace) -> int:
+    state = _require_valid_state(args.repo, projection=True)
+    if (
+        len(args.slug) > 64
+        or not CONTRIBUTION_SLUG_PATTERN.fullmatch(args.slug)
+    ):
+        raise HarnessError(
+            "contribution slug must be at most 64 characters and use lowercase "
+            "letters, numbers, dots, dashes, or underscores"
+        )
+
+    expected = state.registry["repository"]["canonical_remote"]
+    canonical_remote, _ = _canonical_remote(state.repo, expected)
+    push_remote = args.push_remote
+    if push_remote not in _remote_names(state.repo):
+        raise HarnessError(
+            f"contribution refused: push remote '{push_remote}' is not configured"
+        )
+
+    default_branch = state.registry["repository"]["default_branch"]
+    current_branch = _run_git(state.repo, ["branch", "--show-current"])
+    if current_branch != default_branch:
+        raise HarnessError(
+            f"contribution refused: canonical checkout must be on "
+            f"'{default_branch}', found '{current_branch or 'detached HEAD'}'"
+        )
+    if _run_git(state.repo, ["status", "--porcelain"]):
+        raise HarnessError("contribution refused: canonical checkout has local changes")
+
+    branch = f"improvement/{args.slug}"
+    target_input = (
+        args.worktree
+        if args.worktree is not None
+        else state.repo.parent / f"{state.repo.name}-{args.slug}"
+    )
+    target = target_input.expanduser()
+    if not target.is_absolute():
+        target = Path.cwd() / target
+    target = target.resolve()
+    if _inside(target, state.repo.resolve()):
+        raise HarnessError("contribution worktree must be outside the canonical checkout")
+    if target.exists():
+        raise HarnessError(f"contribution worktree already exists: {target}")
+
+    local_ref = f"refs/heads/{branch}"
+    if _run_git(
+        state.repo,
+        ["show-ref", "--verify", local_ref],
+        check=False,
+    ):
+        raise HarnessError(f"contribution branch already exists locally: {branch}")
+    if _run_git(
+        state.repo,
+        ["ls-remote", "--heads", push_remote, local_ref],
+    ):
+        raise HarnessError(
+            f"contribution branch already exists on {push_remote}: {branch}"
+        )
+
+    remote_default = f"refs/remotes/{canonical_remote}/{default_branch}"
+    _run_git(
+        state.repo,
+        [
+            "fetch",
+            "--no-tags",
+            canonical_remote,
+            f"+refs/heads/{default_branch}:{remote_default}",
+        ],
+    )
+    _run_git(
+        state.repo,
+        [
+            "worktree",
+            "add",
+            "-b",
+            branch,
+            str(target),
+            f"{canonical_remote}/{default_branch}",
+        ],
+    )
+
+    print("OK    isolated contribution worktree created")
+    print(f"worktree: {target}")
+    print(f"branch:   {branch}")
+    print(f"base:     {canonical_remote}/{default_branch}")
+    print(f"push:     {push_remote}")
+    print()
+    print("next:")
+    print(f'  cd "{target}"')
+    print("  read CONTRIBUTING.md")
+    print("  python bin/aikb.py --repo . validate --projection")
+    print("  python -m unittest discover -s tests -v")
+    print(f"  git push --set-upstream {push_remote} {branch}")
+    repository = _github_repository(expected)
+    if repository is None:
+        print("  gh pr create --fill")
+    else:
+        print(f"  gh pr create --repo {repository} --fill")
+    return 0
+
+
 def command_status(args: argparse.Namespace) -> int:
     state = _require_valid_state(args.repo, projection=True)
     branch = _run_git(state.repo, ["branch", "--show-current"])
@@ -1087,13 +1242,11 @@ def command_check(args: argparse.Namespace) -> int:
         return 1
     errors.extend(_validate_projection(state))
     try:
-        origin = _run_git(state.repo, ["remote", "get-url", "origin"])
+        canonical_remote, _ = _canonical_remote(
+            state.repo, state.registry["repository"]["canonical_remote"]
+        )
     except HarnessError as exc:
         errors.append(str(exc))
-    else:
-        expected = state.registry["repository"]["canonical_remote"]
-        if _normalize_remote(origin) != _normalize_remote(expected):
-            errors.append(f"origin mismatch: expected {expected}, found {origin}")
     hooks_path = _run_git(
         state.repo,
         ["config", "--local", "--get", "core.hooksPath"],
@@ -1107,7 +1260,10 @@ def command_check(args: argparse.Namespace) -> int:
         _print_errors(errors)
         print(f"\n{len(errors)} health violation(s)", file=sys.stderr)
         return 1
-    print("OK    registry, namespace lineage, claims, projections, and origin are healthy")
+    print(
+        "OK    registry, namespace lineage, claims, projections, and canonical "
+        f"remote '{canonical_remote}' are healthy"
+    )
     return 0
 
 
@@ -1116,10 +1272,8 @@ def command_sync(args: argparse.Namespace) -> int:
     dirty = _run_git(state.repo, ["status", "--porcelain"])
     if dirty:
         raise HarnessError("sync refused: checkout has local changes")
-    origin = _run_git(state.repo, ["remote", "get-url", "origin"])
     expected = state.registry["repository"]["canonical_remote"]
-    if _normalize_remote(origin) != _normalize_remote(expected):
-        raise HarnessError(f"sync refused: origin mismatch; expected {expected}, found {origin}")
+    canonical_remote, _ = _canonical_remote(state.repo, expected)
     branch = _run_git(state.repo, ["branch", "--show-current"])
     expected_branch = state.registry["repository"]["default_branch"]
     if branch != expected_branch:
@@ -1128,7 +1282,7 @@ def command_sync(args: argparse.Namespace) -> int:
         )
     output = _run_git(
         state.repo,
-        ["pull", "--ff-only", "origin", expected_branch],
+        ["pull", "--ff-only", canonical_remote, expected_branch],
     )
     if output:
         print(output)
@@ -1200,6 +1354,26 @@ def _parser() -> argparse.ArgumentParser:
         help="write nothing; return non-zero when projections are stale",
     )
     refresh_parser.set_defaults(handler=command_refresh)
+
+    contribute_parser = subparsers.add_parser(
+        "contribute",
+        help="create an isolated worktree from the canonical remote",
+    )
+    contribute_parser.add_argument(
+        "slug",
+        help="short lowercase identifier used in the branch and worktree names",
+    )
+    contribute_parser.add_argument(
+        "--worktree",
+        type=Path,
+        help="worktree path (default: a sibling of the canonical checkout)",
+    )
+    contribute_parser.add_argument(
+        "--push-remote",
+        default="origin",
+        help="remote that will receive the contribution branch (default: origin)",
+    )
+    contribute_parser.set_defaults(handler=command_contribute)
 
     status_parser = subparsers.add_parser("status", help="show Git provenance")
     status_parser.set_defaults(handler=command_status)

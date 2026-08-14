@@ -24,6 +24,17 @@ def run_cli(*args: str, repo: Path = REPO) -> subprocess.CompletedProcess[str]:
     )
 
 
+def run_git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(repo), *args],
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=15,
+    )
+
+
 def copy_repository(target: Path) -> Path:
     copy = target / "repo"
     shutil.copytree(REPO, copy, ignore=shutil.ignore_patterns(".git", "__pycache__"))
@@ -83,6 +94,11 @@ class HarnessTests(unittest.TestCase):
         self.assertIn("ABSTENTION", result.stderr)
         self.assertIn("may not contain '..'", result.stderr)
 
+    def test_show_allows_contribution_guide(self) -> None:
+        result = run_cli("show", "CONTRIBUTING.md")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Contributing to the AI Knowledge Harness", result.stdout)
+
     def test_claim_tamper_makes_projection_stale(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             repo = copy_repository(Path(temp))
@@ -96,10 +112,30 @@ class HarnessTests(unittest.TestCase):
             claim.write_text(
                 claim.read_text(encoding="utf-8") + "\nTampered after projection.\n",
                 encoding="utf-8",
+                newline="\n",
             )
             result = run_cli("validate", "--projection", repo=repo)
             self.assertEqual(result.returncode, 1)
             self.assertIn("catalog.json: generated projection is stale", result.stderr)
+
+    def test_canonical_claim_with_crlf_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = copy_repository(Path(temp))
+            claim = (
+                repo
+                / "namespaces"
+                / "knowledge.systems.integrity"
+                / "claims"
+                / "design.knowledge.systems.integrity--1.0.0.md"
+            )
+            raw = claim.read_bytes()
+            self.assertNotIn(b"\r", raw)
+            claim.write_bytes(raw.replace(b"\n", b"\r\n"))
+
+            result = run_cli("validate", repo=repo)
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("canonical text must use LF line endings", result.stderr)
 
     def test_namespace_specialization_cycle_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -116,6 +152,7 @@ class HarnessTests(unittest.TestCase):
             manifest_path.write_text(
                 json.dumps(manifest, indent=2) + "\n",
                 encoding="utf-8",
+                newline="\n",
             )
             result = run_cli("validate", "--projection", repo=repo)
             self.assertEqual(result.returncode, 1)
@@ -136,6 +173,7 @@ class HarnessTests(unittest.TestCase):
             manifest_path.write_text(
                 json.dumps(manifest, indent=2) + "\n",
                 encoding="utf-8",
+                newline="\n",
             )
             result = run_cli("validate", "--projection", repo=repo)
             self.assertEqual(result.returncode, 1)
@@ -157,6 +195,7 @@ class HarnessTests(unittest.TestCase):
             claim_path.write_text(
                 text.replace(marker, '"parent_refs": null', 1),
                 encoding="utf-8",
+                newline="\n",
             )
             result = run_cli("validate", "--projection", repo=repo)
             self.assertEqual(result.returncode, 1)
@@ -224,6 +263,187 @@ class HarnessTests(unittest.TestCase):
             result = run_cli("validate", repo=repo)
             self.assertEqual(result.returncode, 1)
             self.assertIn("unresolved template placeholder", result.stderr)
+
+    def test_contribute_creates_isolated_branch_from_origin(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source_parent = root / "source"
+            source_parent.mkdir()
+            repo = copy_repository(source_parent)
+            origin = root / "origin.git"
+            origin_url = origin.as_uri()
+
+            registry_path = repo / "registry.json"
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            registry["repository"]["canonical_remote"] = origin_url
+            registry_path.write_text(
+                json.dumps(registry, indent=2) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            refreshed = run_cli("refresh", repo=repo)
+            self.assertEqual(refreshed.returncode, 0, refreshed.stderr)
+
+            run_git(repo, "init", "-b", "main")
+            run_git(repo, "config", "user.name", "Harness Test")
+            run_git(repo, "config", "user.email", "harness@example.invalid")
+            run_git(repo, "add", ".")
+            run_git(repo, "commit", "-m", "test fixture")
+            run_git(root, "init", "--bare", str(origin))
+            run_git(repo, "remote", "add", "origin", origin_url)
+            run_git(repo, "push", "--set-upstream", "origin", "main")
+
+            worktree = root / "routing-gap"
+            result = run_cli(
+                "contribute",
+                "routing-gap",
+                "--worktree",
+                str(worktree),
+                repo=repo,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue((worktree / "CONTRIBUTING.md").is_file())
+            branch = run_git(worktree, "branch", "--show-current").stdout.strip()
+            self.assertEqual(branch, "improvement/routing-gap")
+            self.assertIn(str(worktree.resolve()), result.stdout)
+            self.assertFalse((repo / "routing-gap").exists())
+
+            (repo / "README.md").write_text(
+                (repo / "README.md").read_text(encoding="utf-8") + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            refused = run_cli(
+                "contribute",
+                "second-gap",
+                "--worktree",
+                str(root / "second-gap"),
+                repo=repo,
+            )
+            self.assertEqual(refused.returncode, 2)
+            self.assertIn("canonical checkout has local changes", refused.stderr)
+
+    def test_fork_clone_uses_upstream_as_the_canonical_remote(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source_parent = root / "source"
+            source_parent.mkdir()
+            repo = copy_repository(source_parent)
+            upstream = root / "upstream.git"
+            fork = root / "fork.git"
+            upstream_url = upstream.as_uri()
+            fork_url = fork.as_uri()
+
+            registry_path = repo / "registry.json"
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            registry["repository"]["canonical_remote"] = upstream_url
+            registry_path.write_text(
+                json.dumps(registry, indent=2) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            refreshed = run_cli("refresh", repo=repo)
+            self.assertEqual(refreshed.returncode, 0, refreshed.stderr)
+
+            run_git(repo, "init", "-b", "main")
+            run_git(repo, "config", "user.name", "Harness Test")
+            run_git(repo, "config", "user.email", "harness@example.invalid")
+            run_git(repo, "add", ".")
+            run_git(repo, "commit", "-m", "test fixture")
+            run_git(root, "init", "--bare", str(upstream))
+            run_git(root, "init", "--bare", str(fork))
+            run_git(repo, "remote", "add", "upstream", upstream_url)
+            run_git(repo, "remote", "add", "origin", fork_url)
+            run_git(repo, "push", "upstream", "main")
+            run_git(repo, "push", "origin", "main")
+            run_git(repo, "config", "core.hooksPath", ".githooks")
+
+            health = run_cli("check", repo=repo)
+            self.assertEqual(health.returncode, 0, health.stderr)
+            self.assertIn("canonical remote 'upstream'", health.stdout)
+
+            synced = run_cli("sync", repo=repo)
+            self.assertEqual(synced.returncode, 0, synced.stderr)
+
+            worktree = root / "fork-gap"
+            result = run_cli(
+                "contribute",
+                "fork-gap",
+                "--worktree",
+                str(worktree),
+                repo=repo,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(
+                run_git(worktree, "branch", "--show-current").stdout.strip(),
+                "improvement/fork-gap",
+            )
+            self.assertIn("base:     upstream/main", result.stdout)
+            self.assertIn("push:     origin", result.stdout)
+            self.assertIn(
+                "git push --set-upstream origin improvement/fork-gap",
+                result.stdout,
+            )
+
+            run_git(repo, "remote", "add", "fork", fork_url)
+            explicit_worktree = root / "explicit-fork-gap"
+            explicit = run_cli(
+                "contribute",
+                "explicit-fork-gap",
+                "--worktree",
+                str(explicit_worktree),
+                "--push-remote",
+                "fork",
+                repo=repo,
+            )
+            self.assertEqual(explicit.returncode, 0, explicit.stderr)
+            self.assertIn("push:     fork", explicit.stdout)
+            self.assertIn(
+                "git push --set-upstream fork improvement/explicit-fork-gap",
+                explicit.stdout,
+            )
+
+    def test_posix_wrapper_resolves_symlinked_invocation(self) -> None:
+        if sys.platform == "win32":
+            self.skipTest("POSIX shell wrapper is not used on Windows")
+        with tempfile.TemporaryDirectory() as temp:
+            link = Path(temp) / "aikb"
+            link.symlink_to(REPO / "bin" / "aikb")
+
+            result = subprocess.run(
+                [str(link), "--repo", str(REPO), "list"],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=30,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("AI knowledge namespaces", result.stdout)
+
+    def test_posix_installer_covers_macos_and_linux_editor_roots(self) -> None:
+        script = (REPO / "install" / "bootstrap.sh").read_text(encoding="utf-8")
+        self.assertIn('"$HOME/.config" "$HOME/Library/Application Support"', script)
+        for editor in ("Code - Insiders", "VSCodium", "Cursor", "Windsurf"):
+            self.assertIn(f'"{editor}"', script)
+
+    def test_posix_installer_configures_shell_environment(self) -> None:
+        script = (REPO / "install" / "bootstrap.sh").read_text(encoding="utf-8")
+        self.assertIn("export AI_KB_REPO=", script)
+        self.assertIn(".zshrc", script)
+        self.assertIn(".bashrc", script)
+
+    def test_shell_sources_use_lf_endings(self) -> None:
+        for relative in (
+            "bin/aikb",
+            "install/bootstrap.sh",
+            ".githooks/pre-push",
+        ):
+            with self.subTest(path=relative):
+                self.assertNotIn(b"\r", (REPO / relative).read_bytes())
 
     def test_windows_installer_uses_bomless_utf8_writes(self) -> None:
         script = (REPO / "install" / "bootstrap.ps1").read_text(encoding="utf-8")

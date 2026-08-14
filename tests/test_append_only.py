@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import subprocess
 import tempfile
 import unittest
@@ -101,6 +102,39 @@ class AppendOnlyGateTests(unittest.TestCase):
             violations = self.gate.check(repo, base)
             self.assertEqual(len(violations), 1)
             self.assertTrue(violations[0].startswith("D:"))
+
+    def test_canonical_base_supports_a_fork_with_upstream_remote(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            repo, _ = create_repository(root)
+            upstream = root / "upstream.git"
+            fork = root / "fork.git"
+            git(root, "init", "--bare", str(upstream))
+            git(root, "init", "--bare", str(fork))
+            (repo / "registry.json").write_text(
+                json.dumps(
+                    {
+                        "repository": {
+                            "canonical_remote": upstream.as_uri(),
+                            "default_branch": "main",
+                        }
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            git(repo, "remote", "add", "origin", fork.as_uri())
+            git(repo, "remote", "add", "upstream", upstream.as_uri())
+            git(repo, "push", "upstream", "HEAD:main")
+            git(
+                repo,
+                "fetch",
+                "upstream",
+                "main:refs/remotes/upstream/main",
+            )
+
+            self.assertEqual(self.gate._canonical_base(repo), "upstream/main")
 
 
 if __name__ == "__main__":

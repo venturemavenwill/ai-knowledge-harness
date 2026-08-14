@@ -23,6 +23,21 @@ LOCAL_BIN="${XDG_BIN_HOME:-$HOME/.local/bin}"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ai-knowledge-harness"
 DRIFT=0
 
+# Interactive rc file for the user's login shell. zsh is the macOS default.
+case "${SHELL:-}" in
+  */zsh) SHELL_PROFILE="${ZDOTDIR:-$HOME}/.zshrc" ;;
+  */bash) SHELL_PROFILE="$HOME/.bashrc" ;;
+  *) SHELL_PROFILE="$HOME/.profile" ;;
+esac
+
+is_on_path() {
+  case ":$PATH:" in
+    *":$BIN_DIR:"*) return 0 ;;
+    *":$LOCAL_BIN:"*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 if command -v python3 >/dev/null 2>&1; then
   PYTHON=python3
 elif command -v python >/dev/null 2>&1; then
@@ -143,6 +158,67 @@ PY
   esac
 }
 
+sync_shell_env() {
+  destination=$1
+  if "$PYTHON" - "$MODE" "$destination" "$REPO_ROOT" <<'PY'
+import pathlib
+import re
+import shlex
+import sys
+
+mode, destination_name, repo_root = sys.argv[1:]
+destination = pathlib.Path(destination_name)
+begin = "# BEGIN ai-knowledge-harness"
+end = "# END ai-knowledge-harness"
+block = "\n".join(
+    [
+        begin,
+        f"export AI_KB_REPO={shlex.quote(repo_root)}",
+        'export AI_KB_ROOT="$AI_KB_REPO"',
+        'case ":$PATH:" in',
+        '  *":$AI_KB_REPO/bin:"*) ;;',
+        '  *) PATH="$AI_KB_REPO/bin:$PATH" ;;',
+        "esac",
+        "export PATH",
+        end,
+    ]
+) + "\n"
+existing = destination.read_text(encoding="utf-8") if destination.exists() else ""
+pattern = re.compile(re.escape(begin) + r".*?" + re.escape(end) + r"\r?\n?", re.S)
+stripped = pattern.sub("", existing).rstrip()
+desired = (stripped + "\n\n" if stripped else "") + block
+has_block = begin in existing and end in existing
+
+if mode == "check":
+    raise SystemExit(0 if has_block and existing == desired else 1)
+if mode == "uninstall":
+    if not has_block:
+        raise SystemExit(3)
+    if stripped:
+        destination.write_text(stripped + "\n", encoding="utf-8", newline="\n")
+    else:
+        destination.unlink()
+    raise SystemExit(0)
+if existing != desired:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(desired, encoding="utf-8", newline="\n")
+    raise SystemExit(4)
+raise SystemExit(0)
+PY
+  then
+    result=0
+  else
+    result=$?
+  fi
+  case "$result" in
+    0) ok "$destination" ;;
+    1) stale "$destination" ;;
+    3) skip "$destination (managed block absent)" ;;
+    4) wrote "$destination" ;;
+    *) return "$result" ;;
+  esac
+}
+
 printf '\nAI knowledge harness - repository: %s\n' "$REPO_ROOT"
 printf 'mode: %s\n' "$MODE"
 
@@ -171,7 +247,7 @@ else
   wrote 'core.hooksPath=.githooks'
 fi
 
-printf '\n[1] command and repository pointer\n'
+printf '\n[1] command, repository pointer, and shell environment\n'
 if [ "$MODE" = uninstall ]; then
   if [ -L "$LOCAL_BIN/aikb" ] && [ "$(readlink "$LOCAL_BIN/aikb")" = "$BIN_DIR/aikb" ]; then
     rm -f -- "$LOCAL_BIN/aikb"
@@ -203,18 +279,34 @@ else
   wrote "$CONFIG_DIR/repo"
 fi
 
+sync_shell_env "$SHELL_PROFILE"
+if [ "$MODE" != uninstall ] && ! is_on_path; then
+  # The rc file is authoritative; a non-interactive shell has not sourced it
+  # yet, so this is informational rather than drift.
+  skip "$BIN_DIR not yet on PATH in this shell (open a new terminal)"
+fi
+
 printf '\n[2] VS Code global instructions\n'
 vscode_source="$SURFACES/vscode/ai-knowledge-base.instructions.md"
-for profile in \
-  "$HOME/.config/Code" \
-  "$HOME/.config/Code - Insiders" \
-  "$HOME/Library/Application Support/Code" \
-  "$HOME/Library/Application Support/Code - Insiders"
-do
-  if [ -d "$profile" ]; then
-    sync_file "$vscode_source" "$profile/User/prompts/ai-knowledge-base.instructions.md"
-  fi
+vscode_found=0
+for root in "$HOME/.config" "$HOME/Library/Application Support"; do
+  for name in \
+    "Code" \
+    "Code - Insiders" \
+    "Code - Exploration" \
+    "VSCodium" \
+    "Cursor" \
+    "Windsurf"
+  do
+    if [ -d "$root/$name" ]; then
+      vscode_found=$((vscode_found + 1))
+      sync_file "$vscode_source" "$root/$name/User/prompts/ai-knowledge-base.instructions.md"
+    fi
+  done
 done
+if [ "$vscode_found" -eq 0 ]; then
+  skip 'no supported VS Code profile found'
+fi
 
 printf '\n[3] user-level skills\n'
 skill_source="$SURFACES/skill/SKILL.md"
@@ -239,6 +331,12 @@ if [ "$MODE" = check ]; then
 fi
 if [ "$MODE" = uninstall ]; then
   printf '%s\n' 'done - managed knowledge surfaces were removed.'
+  printf '%s\n' 'open a new terminal so the removed shell environment takes effect.'
 else
-  printf '%s\n' 'done - ensure ~/.local/bin is on PATH, then run: aikb check'
+  printf '%s\n' 'done - open a new terminal, then run: aikb check'
+  if ! is_on_path; then
+    printf 'this shell does not yet expose aikb; %s was updated.\n' "$SHELL_PROFILE"
+    printf 'to use it immediately without a new terminal, run:\n'
+    printf '  . %s\n' "$SHELL_PROFILE"
+  fi
 fi

@@ -1,0 +1,63 @@
+name: Harness gap
+description: Report a reusable weakness without prematurely promoting it to knowledge.
+title: "[gap]: "
+labels:
+  - harness-gap
+  - needs-evidence
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Everything submitted here is public and licensed for redistribution.
+        Redact project code, credentials, customer data, personal data, and material you cannot license.
+  - type: textarea
+    id: context
+    attributes:
+      label: Redacted task context
+      description: What kind of work exposed the gap, without project-sensitive details?
+      placeholder: While verifying a reusable Python package repair...
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: Observed gap
+      description: What did the harness lack, route incorrectly, or make unnecessarily difficult?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Reusable behavior
+      description: What behavior should transfer to other projects, tools, or models?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Retained evidence
+      description: Provide reproducible checks or safe source locators. State explicitly when evidence is incomplete.
+    validations:
+      required: true
+  - type: textarea
+    id: model_tool_context
+    attributes:
+      label: Model and tool context
+      description: Optional versions or grounding context that help reproduce the observation; model agreement is not primary evidence.
+  - type: textarea
+    id: candidate
+    attributes:
+      label: Candidate improvement
+      description: Optional smallest durable change, without prescribing unsupported knowledge.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing namespaces and open issues for this gap.
+          required: true
+        - label: This report contains no secrets, private project source, customer data, personal data, or unlicensed material.
+          required: true
+        - label: I have distinguished observed evidence from model-generated suggestions.
+          required: true

@@ -1,0 +1,57 @@
+name: Capability proposal
+description: Propose a reusable capability, integration, or project-level improvement.
+title: "[proposal]: "
+labels:
+  - enhancement
+  - needs-design
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Propose the outcome and evidence, not only a preferred implementation.
+        Use the Harness gap form instead when the evidence is incomplete.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Reusable problem
+      description: What recurring problem affects multiple projects, tools, models, or contributors?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired capability
+      description: What should a user or agent be able to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: transfer
+    attributes:
+      label: Transfer beyond one project
+      description: Who else benefits, and why is this not a local convention?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and alternatives
+      description: What supports the proposal, and what alternatives or existing features were considered?
+    validations:
+      required: true
+  - type: textarea
+    id: trust
+    attributes:
+      label: Trust, privacy, and compatibility impact
+      description: Identify new permissions, data flows, dependencies, platforms, or agent behaviors.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing namespaces, issues, and discussions.
+          required: true
+        - label: This proposal contains no secrets or material that cannot be made public.
+          required: true

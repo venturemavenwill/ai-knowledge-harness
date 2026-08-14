@@ -297,6 +297,66 @@
       "title": "Financial evidence synthesis"
     },
     {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
+          "authority": "hand-authored",
+          "claim_id": "method.knowledge.harness.evidence-gated-improvement",
+          "claim_ref": "method.knowledge.harness.evidence-gated-improvement@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "A shared AI knowledge harness improves safely when agents convert verified reusable gaps into isolated, evidence-retaining, append-only pull requests while excluding sensitive and project-specific material.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/knowledge.harness.evolution/claims/method.knowledge.harness.evidence-gated-improvement--1.0.0.md",
+          "sha256": "84c14fc93b1c6e597b92c7656ce4f93074e0521bd476e179495994f4e418c1ec",
+          "status": "active",
+          "tags": [
+            "agent-learning",
+            "collaboration",
+            "evidence-gating",
+            "feedback-loop",
+            "harness-evolution",
+            "pull-requests",
+            "specialization"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "AI-assisted work exposes a reusable gap, weakness, conflict, or verified procedure that may improve the shared harness",
+        "contributing knowledge or tooling learned with different models, tools, or grounding sources"
+      ],
+      "entry_points": [
+        "claims/method.knowledge.harness.evidence-gated-improvement--1.0.0.md"
+      ],
+      "extends": "knowledge.systems.integrity",
+      "kind": "working-discipline",
+      "lineage": [
+        "knowledge.systems.integrity",
+        "knowledge.harness.evolution"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/knowledge.harness.evolution/manifests/0001.json",
+        "sha256": "bc3abfcb4b82e874339d2cff81d9fc3853bd15ef8c5778fbc207d4407e8aba69",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/knowledge.harness.evolution/manifests/0001.json",
+          "sha256": "bc3abfcb4b82e874339d2cff81d9fc3853bd15ef8c5778fbc207d4407e8aba69",
+          "supersedes": null
+        }
+      ],
+      "namespace": "knowledge.harness.evolution",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Collaborative harness evolution"
+    },
+    {
       "authority": "reference-only",
       "claims": [
         {
