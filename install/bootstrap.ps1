@@ -228,6 +228,7 @@ if (-not $currentPath) {
 }
 $pathEntries = @($currentPath -split ';' | Where-Object { $_ })
 $onPath = @($pathEntries | Where-Object { $_.TrimEnd('\') -ieq $BinDir.TrimEnd('\') }).Count -gt 0
+$pathFirst = $pathEntries.Count -gt 0 -and $pathEntries[0].TrimEnd('\') -ieq $BinDir.TrimEnd('\')
 
 if ($Uninstall) {
     if ($currentRepo -eq $RepoRoot) {
@@ -247,7 +248,7 @@ if ($Uninstall) {
 elseif ($Check) {
     if ($currentRepo -eq $RepoRoot) { Good 'AI_KB_REPO' } else { Missing "AI_KB_REPO (is '$currentRepo')" }
     if ($currentRoot -eq $RepoRoot) { Good 'AI_KB_ROOT compatibility variable' } else { Missing "AI_KB_ROOT (is '$currentRoot')" }
-    if ($onPath) { Good 'user PATH contains harness bin' } else { Missing "user PATH missing $BinDir" }
+    if ($pathFirst) { Good 'user PATH starts with harness bin' } else { Missing "user PATH does not start with $BinDir" }
 }
 else {
     if ($currentRepo -ne $RepoRoot) {
@@ -260,17 +261,18 @@ else {
         Changed "AI_KB_ROOT=$RepoRoot"
     }
     else { Good 'AI_KB_ROOT compatibility variable' }
-    if (-not $onPath) {
-        $newPath = (@($pathEntries) + $BinDir) -join ';'
+    if (-not $pathFirst) {
+        $withoutHarness = @($pathEntries | Where-Object { $_.TrimEnd('\') -ine $BinDir.TrimEnd('\') })
+        $newPath = (@($BinDir) + $withoutHarness) -join ';'
         [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
-        Changed "user PATH += $BinDir"
+        Changed "user PATH starts with $BinDir"
     }
     else { Good 'user PATH' }
     $env:AI_KB_REPO = $RepoRoot
     $env:AI_KB_ROOT = $RepoRoot
-    if ($env:Path -notlike "*$BinDir*") {
-        $env:Path = $env:Path.TrimEnd(';') + ';' + $BinDir
-    }
+    $processEntries = @($env:Path -split ';' | Where-Object { $_ })
+    $withoutProcessHarness = @($processEntries | Where-Object { $_.TrimEnd('\') -ine $BinDir.TrimEnd('\') })
+    $env:Path = (@($BinDir) + $withoutProcessHarness) -join ';'
 }
 
 Say ''

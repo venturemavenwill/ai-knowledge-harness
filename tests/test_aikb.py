@@ -231,6 +231,11 @@ class HarnessTests(unittest.TestCase):
         self.assertIn("Write-Utf8NoBom $Destination $desired", script)
         self.assertNotIn("Set-Content -LiteralPath $Destination", script)
 
+    def test_windows_installer_places_harness_first_on_path(self) -> None:
+        script = (REPO / "install" / "bootstrap.ps1").read_text(encoding="utf-8")
+        self.assertIn("$newPath = (@($BinDir) + $withoutHarness) -join ';'", script)
+        self.assertNotIn("$newPath = (@($pathEntries) + $BinDir) -join ';'", script)
+
 
 if __name__ == "__main__":
     unittest.main()
