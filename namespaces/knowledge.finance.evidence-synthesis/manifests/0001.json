@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "knowledge.finance.evidence-synthesis",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Financial evidence synthesis",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": null,
+  "consult_when": [
+    "answering from financial documents, filings, reports, tables, or charts",
+    "reconciling conflicting financial figures or performing expected-value analysis"
+  ],
+  "entry_points": [
+    "claims/spec.knowledge.finance.evidence-synthesis--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

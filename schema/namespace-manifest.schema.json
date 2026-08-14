@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/venturemavenwill/ai-knowledge-harness/schema/namespace-manifest.schema.json",
+  "title": "AI Knowledge Namespace Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "namespace",
+    "generation",
+    "supersedes",
+    "title",
+    "kind",
+    "authority",
+    "extends",
+    "consult_when",
+    "entry_points",
+    "search_paths"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "capability-procedure",
+        "design-substrate",
+        "empirical-findings",
+        "working-discipline"
+      ]
+    },
+    "authority": {
+      "enum": [
+        "hand-authored-unmeasured",
+        "primary-measurement",
+        "reference-only"
+      ]
+    },
+    "extends": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "consult_when": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "entry_points": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "search_paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

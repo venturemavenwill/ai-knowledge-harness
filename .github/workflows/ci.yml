@@ -1,0 +1,68 @@
+name: validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate canonical records and projections
+        run: python bin/aikb.py validate --projection
+
+      - name: Run unit and adversarial tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Verify deterministic replay
+        run: python bin/aikb.py refresh --check
+
+      - name: Verify append-only history
+        if: github.event_name == 'pull_request'
+        run: python scripts/check_append_only.py --base-ref "${{ github.event.pull_request.base.sha }}"
+
+      - name: Parse PowerShell installer
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path 'install/bootstrap.ps1'),
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            exit 1
+          }
+
+      - name: Parse POSIX installer
+        if: runner.os != 'Windows'
+        run: sh -n install/bootstrap.sh
+
+      - name: Check whitespace
+        run: git diff --check

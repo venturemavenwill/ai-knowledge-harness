@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 "$SCRIPT_DIR/aikb.py" "$@"
+fi
+if command -v python >/dev/null 2>&1; then
+  exec python "$SCRIPT_DIR/aikb.py" "$@"
+fi
+
+printf '%s\n' 'ABSTENTION  Python 3.9 or newer is required but was not found on PATH.' >&2
+exit 2

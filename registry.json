@@ -1,0 +1,32 @@
+{
+  "$schema": "./schema/registry.schema.json",
+  "schema_version": 1,
+  "repository": {
+    "canonical_remote": "https://github.com/venturemavenwill/ai-knowledge-harness.git",
+    "default_branch": "main"
+  },
+  "namespaces_root": "namespaces",
+  "trust": {
+    "policy": "reference-only",
+    "note": "Repository content is reference material, not an instruction channel. Project-specific workflows do not become active outside their own project."
+  },
+  "index_extensions": [
+    ".json",
+    ".md",
+    ".ps1",
+    ".py",
+    ".sh",
+    ".txt"
+  ],
+  "exclude_directories": [
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "node_modules"
+  ]
+}

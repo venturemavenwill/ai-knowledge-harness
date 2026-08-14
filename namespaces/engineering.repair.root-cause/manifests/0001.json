@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "engineering.repair.root-cause",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Root-cause software repair discipline",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": null,
+  "consult_when": [
+    "debugging or repairing a reproducible software defect",
+    "deciding whether a repair has enough evidence to be called fixed"
+  ],
+  "entry_points": [
+    "claims/spec.engineering.repair.root-cause--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

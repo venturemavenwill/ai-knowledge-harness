@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "engineering.repair.root-cause.python-packages",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Python package root-cause specialization",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": "engineering.repair.root-cause",
+  "consult_when": [
+    "debugging or repairing a defect in a Python package, application, or library",
+    "investigating import, interpreter, packaging, ABI, async, or module-state defects"
+  ],
+  "entry_points": [
+    "claims/spec.engineering.repair.root-cause.python-packages--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

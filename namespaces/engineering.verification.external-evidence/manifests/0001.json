@@ -1,0 +1,22 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "engineering.verification.external-evidence",
+  "generation": 1,
+  "supersedes": null,
+  "title": "External evidence and verification ladders",
+  "kind": "working-discipline",
+  "authority": "reference-only",
+  "extends": null,
+  "consult_when": [
+    "about to declare work done, correct, fixed, or good enough",
+    "writing an acceptance gate or deciding which evidence tier to buy",
+    "a structural test passes but integration or mutation evidence is absent"
+  ],
+  "entry_points": [
+    "claims/method.engineering.verification.external-evidence--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

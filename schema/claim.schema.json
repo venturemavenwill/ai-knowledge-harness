@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/venturemavenwill/ai-knowledge-harness/schema/claim.schema.json",
+  "title": "AI Knowledge Claim Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "claim_id",
+    "namespace",
+    "version",
+    "expression",
+    "authority",
+    "scope",
+    "confidence",
+    "confidence_method",
+    "provenance",
+    "lineage",
+    "relationships",
+    "retrieval"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "claim_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "expression": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority": {
+      "enum": [
+        "hand-authored",
+        "primary-measurement",
+        "reference-only"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "holds_when",
+        "expires"
+      ],
+      "properties": {
+        "holds_when": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expires": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "confidence_method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer",
+        "producer_version",
+        "authored_utc",
+        "derived_from"
+      ],
+      "properties": {
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authored_utc": {
+          "type": "string",
+          "format": "date"
+        },
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "locator",
+              "evidence_class"
+            ],
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_class": {
+                "enum": [
+                  "primary-result",
+                  "reported-summary",
+                  "design-reference",
+                  "operator-authored"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "generation",
+        "parent_refs"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "active",
+            "superseded",
+            "withdrawn"
+          ]
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "parent_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*@[0-9]+\\.[0-9]+\\.[0-9]+$"
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "target"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tags"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        }
+      }
+    }
+  }
+}

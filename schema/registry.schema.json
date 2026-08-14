@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/venturemavenwill/ai-knowledge-harness/schema/registry.schema.json",
+  "title": "AI Knowledge Harness Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "repository",
+    "namespaces_root",
+    "trust",
+    "index_extensions",
+    "exclude_directories"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_remote",
+        "default_branch"
+      ],
+      "properties": {
+        "canonical_remote": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "namespaces_root": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "trust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "note"
+      ],
+      "properties": {
+        "policy": {
+          "const": "reference-only"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "index_extensions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^\\.[a-z0-9]+$"
+      }
+    },
+    "exclude_directories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
