@@ -40,3 +40,10 @@ isolated contribution worktree, retain safe evidence, add tests when behavior
 changes, and submit a pull request. Otherwise report the candidate gap without
 mutating the harness. Never transfer secrets, customer data, private project
 source, or licensed material.
+
+## Staying current
+
+Knowledge-only updates fast-forward automatically. When `aikb` prints an
+`UPDATE` line about executable code or installed agent surfaces, tell the
+operator what is pending and let them decide. Do not run `aikb update --all`
+on your own initiative; it changes code that will run on this machine.

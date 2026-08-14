@@ -21,4 +21,8 @@ permits harness modification, use `aikb contribute <slug>` and follow
 `aikb show CONTRIBUTING.md`; otherwise report the candidate without mutating the
 harness. Never transfer secrets, private project source, customer data, or
 licensed material.
+
+Knowledge updates apply automatically. When `aikb` prints `UPDATE ...` about
+executable code or installed surfaces, report it to the operator and let them
+decide; do not run `aikb update --all` on your own initiative.
 <!-- END ai-knowledge-harness -->

@@ -157,8 +157,38 @@ Updating knowledge is a fast-forward Git pull (`aikb sync`). The command refuses
 to run when:
 
 - the checkout has local changes;
-- `origin` differs from the canonical remote;
+- no configured remote matches the canonical remote;
 - the pull would require a merge or history rewrite.
+
+### 8a. Split-trust distribution
+
+The harness is distributed to many machines and accepts pull requests from
+anyone, so an update carries two different kinds of payload:
+
+1. **Knowledge** — `namespaces/**`, `catalog.json`, and `INDEX.md`. The CLI
+   reads these as data. Applying them cannot change what executes locally.
+2. **Executable and installed material** — `bin/`, `install/`, `scripts/`,
+   `.githooks/`, `schema/`, `surfaces/`, workflows, and documentation. Applying
+   these changes what runs on the machine or what agents are instructed to do.
+
+Read commands opportunistically fast-forward class 1 and refuse to apply
+class 2. Class 2 is reported and waits for `aikb update --all`, which is an
+explicit human act. This keeps every installation current on capabilities
+without turning a merged pull request into unattended remote code execution.
+
+The automatic path is deliberately narrow. It runs only when the checkout is
+clean, on the default branch, a strict ancestor of the canonical branch, and at
+most once per `AIKB_UPDATE_INTERVAL` (default 86400 seconds). It performs
+`fetch` plus `merge --ff-only`, never a merge commit or rebase. Every failure
+mode — offline, missing remote, diverged history, unreadable state — returns
+silently rather than blocking a read. Check state lives in the Git directory,
+so it never dirties the worktree that `sync` and `contribute` require to be
+clean.
+
+`AIKB_AUTO_UPDATE` selects `knowledge` (default), `off`, or `all`. `all`
+restores unattended code updates for operators who explicitly accept that
+tradeoff; it is not the default because the canonical repository accepts
+worldwide contributions.
 
 ## 9. Collaborative evolution
 
@@ -202,3 +232,6 @@ and public visibility instead. Do not describe that as independent review.
   must surface when only a summary, rather than the raw result, is present.
 - Installation cannot make an agent obey a procedure; verification must come
   from executable checks in the consuming project.
+- Automatic knowledge updates reduce staleness but do not authenticate
+  contributors. Trust in merged knowledge rests on branch protection, review,
+  and the append-only history, not on the update mechanism.

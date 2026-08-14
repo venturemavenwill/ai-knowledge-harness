@@ -27,6 +27,7 @@ aikb show namespaces/guard.autonomy.tool-intent/claims/spec.guard.autonomy.tool-
 aikb lineage engineering.repair.root-cause.python-packages
 aikb status
 aikb check
+aikb update
 aikb contribute concise-gap-slug
 ```
 
@@ -52,12 +53,31 @@ Search before asserting. Preserve each claim's authority, evidence status,
 scope, provenance, and limitations. A `reported-summary` is not promoted to a
 primary measurement merely because it is convenient.
 
+## Staying current
+
+Read commands keep knowledge current on their own. A knowledge-only update
+(`namespaces/`, `catalog.json`, `INDEX.md`) fast-forwards automatically at most
+once a day when the checkout is clean and on the default branch.
+
+An update that changes executable code or installed agent surfaces is reported
+on stderr as `UPDATE ...` and deliberately **not** applied. When that appears:
+
+1. tell the operator an update is pending and what it touches;
+2. do not run `aikb update --all` on your own initiative — it changes code that
+   will run on this machine;
+3. after the operator consents and applies it, remind them to re-run the
+   installer bootstrap so installed surfaces match.
+
+Set `AIKB_AUTO_UPDATE=off` to disable the check entirely.
+
 ## Repository maintenance
 
-Read commands are safe from any project. `aikb sync` and `aikb refresh` mutate
-the checkout and must be reconciled with current operator intent.
+Read commands are safe from any project. `aikb sync`, `aikb update`, and
+`aikb refresh` mutate the checkout and must be reconciled with current operator
+intent.
 
 - `aikb sync` refuses dirty worktrees and uses only `git pull --ff-only`.
+- `aikb update --check` reports pending updates without writing.
 - `aikb refresh --check` detects projection drift without writing.
 - `aikb contribute <slug>` creates an isolated improvement worktree from the
   canonical remote; follow `aikb show CONTRIBUTING.md`.

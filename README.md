@@ -117,14 +117,53 @@ aikb status
 aikb check
 aikb refresh [--check]
 aikb sync
+aikb update [--check] [--all]
 aikb contribute SLUG [--worktree PATH] [--push-remote REMOTE]
 ```
 
 `list`, `index`, `search`, `show`, `lineage`, `status`, and `check` are
 read-only. `refresh` rewrites only the two generated projections. `sync` fails
 closed on a dirty checkout and fast-forwards only from the canonical remote.
-`contribute` fetches the canonical default branch and creates an isolated
+`update` does the same but classifies what is arriving first. `contribute`
+fetches the canonical default branch and creates an isolated
 `improvement/<slug>` branch and sibling worktree.
+
+## Staying current
+
+Everyone who installs the harness should keep receiving improvements from
+contributors worldwide, without silently running whatever code was merged
+upstream. The CLI therefore splits an incoming update in two:
+
+| Incoming change | Behavior |
+|---|---|
+| Knowledge only — `namespaces/**`, `catalog.json`, `INDEX.md` | Fast-forwarded automatically, then reported |
+| Anything executable or installed — `bin/`, `install/`, `scripts/`, `.githooks/`, `schema/`, `surfaces/`, workflows, docs | Reported and held for your review |
+
+Knowledge is reference material that the CLI reads, so applying it cannot
+change what runs on your machine. Executable code and installed agent surfaces
+can, so they always wait for a person.
+
+The check runs on read commands, at most once every 24 hours, and only when the
+checkout is clean, on the default branch, and a fast-forward is possible. It
+fails silently offline and never blocks a command.
+
+Review and apply held updates explicitly:
+
+```bash
+aikb update            # show what is pending, apply if knowledge only
+aikb update --check    # report only; non-zero when an update is available
+aikb update --all      # apply code and surface changes after review
+```
+
+Re-run the installer bootstrap after applying a code or surface update so the
+installed agent surfaces match the repository.
+
+Two environment variables control the behavior:
+
+- `AIKB_AUTO_UPDATE` — `knowledge` (default), `off`, or `all`. Use `off` in
+  locked-down or air-gapped environments; `all` only if you accept unattended
+  code updates.
+- `AIKB_UPDATE_INTERVAL` — seconds between remote checks, default `86400`.
 
 ## For AI agents and automation
 
@@ -143,6 +182,10 @@ not:
 Once authorized, agents can use stable CLI output and `catalog.json` for routing,
 then retrieve only the relevant namespace. The installed surfaces teach this
 same trust boundary in model-specific locations.
+
+Agents should surface a pending code update to the operator rather than
+applying it. `aikb update --all` changes executable code and requires human
+consent; running it unattended is a supply-chain decision, not a convenience.
 
 ## Contribute from anywhere
 

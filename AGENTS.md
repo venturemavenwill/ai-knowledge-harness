@@ -40,6 +40,10 @@ those actions only when they match the current operator's explicit intent.
 - Use repository-relative POSIX paths in canonical records and generated output.
 - Fail closed with a characterized error instead of silently weakening a check.
 - Add or update a regression test whenever behavior changes.
+- Treat `namespaces/**`, `catalog.json`, and `INDEX.md` as the only paths that
+  may reach a user's machine automatically. Anything executable or installed
+  must stay behind explicit consent; see `ARCHITECTURE.md` section 8a before
+  changing that boundary.
 
 ## Required validation
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -13,14 +14,22 @@ CLI = REPO / "bin" / "aikb.py"
 NEW_NAMESPACE = REPO / "scripts" / "new_namespace.py"
 
 
-def run_cli(*args: str, repo: Path = REPO) -> subprocess.CompletedProcess[str]:
+def run_cli(
+    *args: str, repo: Path = REPO, env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
+    # Network-touching auto-update stays off unless a test opts in.
+    environment = os.environ.copy()
+    environment["AIKB_AUTO_UPDATE"] = "off"
+    if env:
+        environment.update(env)
     return subprocess.run(
         [sys.executable, str(CLI), "--repo", str(repo), *args],
         check=False,
         capture_output=True,
         text=True,
         encoding="utf-8",
-        timeout=15,
+        timeout=30,
+        env=environment,
     )
 
 
@@ -39,6 +48,148 @@ def copy_repository(target: Path) -> Path:
     copy = target / "repo"
     shutil.copytree(REPO, copy, ignore=shutil.ignore_patterns(".git", "__pycache__"))
     return copy
+
+
+def make_tracked_clone(root: Path) -> Path:
+    """Build a checkout on `main` whose canonical remote is a local bare repo."""
+    source_parent = root / "source"
+    source_parent.mkdir()
+    repo = copy_repository(source_parent)
+    origin = root / "origin.git"
+
+    registry_path = repo / "registry.json"
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    registry["repository"]["canonical_remote"] = origin.as_uri()
+    registry_path.write_text(
+        json.dumps(registry, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
+    refreshed = run_cli("refresh", repo=repo)
+    if refreshed.returncode != 0:
+        raise AssertionError(refreshed.stderr)
+
+    run_git(repo, "init", "-b", "main")
+    run_git(repo, "config", "user.name", "Harness Test")
+    run_git(repo, "config", "user.email", "harness@example.invalid")
+    run_git(repo, "add", ".")
+    run_git(repo, "commit", "-m", "test fixture")
+    run_git(root, "init", "--bare", str(origin))
+    run_git(repo, "remote", "add", "origin", origin.as_uri())
+    run_git(repo, "push", "--set-upstream", "origin", "main")
+    return repo
+
+
+def publish_upstream_commit(repo: Path, relative: str, message: str) -> str:
+    """Publish a commit to origin, then rewind the local branch behind it."""
+    target = repo / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(f"# {message}\n", encoding="utf-8", newline="\n")
+    run_git(repo, "add", "--all")
+    run_git(repo, "commit", "-m", message)
+    published = run_git(repo, "rev-parse", "HEAD").stdout.strip()
+    run_git(repo, "push", "origin", "main")
+    run_git(repo, "reset", "--hard", "HEAD~1")
+    return published
+
+
+def head_of(repo: Path) -> str:
+    return run_git(repo, "rev-parse", "HEAD").stdout.strip()
+
+
+KNOWLEDGE_FILE = "namespaces/knowledge.systems.integrity/NOTES.md"
+CODE_FILE = "install/NOTE.txt"
+
+
+class AutoUpdateTests(unittest.TestCase):
+    def test_knowledge_only_update_applies_automatically(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            published = publish_upstream_commit(repo, KNOWLEDGE_FILE, "knowledge note")
+            self.assertNotEqual(head_of(repo), published)
+
+            result = run_cli("list", repo=repo, env={"AIKB_AUTO_UPDATE": "knowledge"})
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("applied 1 knowledge file(s)", result.stderr)
+            self.assertEqual(head_of(repo), published)
+            self.assertTrue((repo / KNOWLEDGE_FILE).is_file())
+
+    def test_code_change_is_reported_but_never_auto_applied(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            published = publish_upstream_commit(repo, CODE_FILE, "tooling change")
+            before = head_of(repo)
+
+            result = run_cli("list", repo=repo, env={"AIKB_AUTO_UPDATE": "knowledge"})
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("change executable code or installed surfaces", result.stderr)
+            self.assertIn(CODE_FILE, result.stderr)
+            self.assertEqual(head_of(repo), before)
+            self.assertNotEqual(head_of(repo), published)
+            self.assertFalse((repo / CODE_FILE).exists())
+
+    def test_auto_update_can_be_disabled(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            publish_upstream_commit(repo, KNOWLEDGE_FILE, "knowledge note")
+            before = head_of(repo)
+
+            result = run_cli("list", repo=repo, env={"AIKB_AUTO_UPDATE": "off"})
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertNotIn("UPDATE", result.stderr)
+            self.assertEqual(head_of(repo), before)
+
+    def test_dirty_checkout_is_never_auto_updated(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            publish_upstream_commit(repo, KNOWLEDGE_FILE, "knowledge note")
+            before = head_of(repo)
+            readme = repo / "README.md"
+            readme.write_text(
+                readme.read_text(encoding="utf-8") + "\nlocal edit\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+
+            result = run_cli("list", repo=repo, env={"AIKB_AUTO_UPDATE": "knowledge"})
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(head_of(repo), before)
+
+    def test_update_command_gates_code_changes_behind_all(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            published = publish_upstream_commit(repo, CODE_FILE, "tooling change")
+            before = head_of(repo)
+
+            gated = run_cli("update", repo=repo)
+            self.assertEqual(gated.returncode, 1, gated.stderr)
+            self.assertIn(CODE_FILE, gated.stdout)
+            self.assertIn("aikb update --all", gated.stdout)
+            self.assertEqual(head_of(repo), before)
+
+            applied = run_cli("update", "--all", repo=repo)
+            self.assertEqual(applied.returncode, 0, applied.stderr)
+            self.assertEqual(head_of(repo), published)
+            self.assertIn("re-run the installer bootstrap", applied.stdout)
+
+    def test_update_check_reports_without_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = make_tracked_clone(Path(temp))
+            publish_upstream_commit(repo, KNOWLEDGE_FILE, "knowledge note")
+            before = head_of(repo)
+
+            pending = run_cli("update", "--check", repo=repo)
+            self.assertEqual(pending.returncode, 1, pending.stderr)
+            self.assertEqual(head_of(repo), before)
+
+            applied = run_cli("update", repo=repo)
+            self.assertEqual(applied.returncode, 0, applied.stderr)
+
+            current = run_cli("update", "--check", repo=repo)
+            self.assertEqual(current.returncode, 0, current.stderr)
+            self.assertIn("already current", current.stdout)
 
 
 class HarnessTests(unittest.TestCase):

@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Sequence
@@ -54,6 +55,17 @@ ALLOWED_SHOW_ROOT_FILES = frozenset(
         "llms.txt",
         "registry.json",
     }
+)
+
+# Paths whose content is reference material rather than executable behavior.
+# Only these may be fast-forwarded onto a user's machine without consent.
+KNOWLEDGE_ROOT_FILES = frozenset({"INDEX.md", "catalog.json"})
+KNOWLEDGE_PATH_PREFIX = "namespaces/"
+UPDATE_STATE_NAME = "aikb-update-state.json"
+DEFAULT_UPDATE_INTERVAL_SECONDS = 86400
+AUTO_UPDATE_MODES = frozenset({"off", "knowledge", "all"})
+AUTO_UPDATE_COMMANDS = frozenset(
+    {"list", "index", "search", "show", "lineage", "status", "check"}
 )
 
 
@@ -950,6 +962,190 @@ def _github_repository(remote: str) -> str | None:
     return None
 
 
+def _git_succeeds(repo: Path, args: Sequence[str]) -> bool:
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(repo), *args],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+    except FileNotFoundError:
+        return False
+    return completed.returncode == 0
+
+
+def _auto_update_mode() -> str:
+    value = os.environ.get("AIKB_AUTO_UPDATE", "knowledge").strip().lower()
+    if value in {"0", "false", "no", "never", "none"}:
+        return "off"
+    if value in {"1", "true", "yes"}:
+        return "knowledge"
+    return value if value in AUTO_UPDATE_MODES else "knowledge"
+
+
+def _update_interval() -> int:
+    try:
+        return max(0, int(os.environ.get("AIKB_UPDATE_INTERVAL", "")))
+    except ValueError:
+        return DEFAULT_UPDATE_INTERVAL_SECONDS
+
+
+def _update_state_path(repo: Path) -> Path | None:
+    try:
+        git_dir = _run_git(repo, ["rev-parse", "--absolute-git-dir"])
+    except HarnessError:
+        return None
+    return Path(git_dir) / UPDATE_STATE_NAME if git_dir else None
+
+
+def _read_update_state(path: Path | None) -> dict[str, Any]:
+    if path is None or not path.is_file():
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def _write_update_state(path: Path | None, value: dict[str, Any]) -> None:
+    if path is None:
+        return
+    try:
+        path.write_text(
+            json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    except OSError:
+        pass
+
+
+def _is_knowledge_path(path: str) -> bool:
+    return path in KNOWLEDGE_ROOT_FILES or path.startswith(KNOWLEDGE_PATH_PREFIX)
+
+
+def _incoming_paths(repo: Path, local: str, remote: str) -> list[str]:
+    output = _run_git(repo, ["diff", "--name-only", f"{local}..{remote}"])
+    return sorted({line.strip() for line in output.splitlines() if line.strip()})
+
+
+def _partition_incoming(paths: Sequence[str]) -> tuple[list[str], list[str]]:
+    knowledge = sorted(path for path in paths if _is_knowledge_path(path))
+    other = sorted(path for path in paths if not _is_knowledge_path(path))
+    return knowledge, other
+
+
+def _update_target(repo: Path) -> tuple[str, str, str] | None:
+    """Return (remote name, default branch, remote-tracking ref) when updatable."""
+    try:
+        registry = _read_json(repo / "registry.json")
+        expected = registry["repository"]["canonical_remote"]
+        default_branch = registry["repository"]["default_branch"]
+    except (HarnessError, KeyError, TypeError):
+        return None
+    if not isinstance(expected, str) or not isinstance(default_branch, str):
+        return None
+    try:
+        remote_name, _ = _canonical_remote(repo, expected)
+    except HarnessError:
+        return None
+    return remote_name, default_branch, f"refs/remotes/{remote_name}/{default_branch}"
+
+
+def _auto_update(repo: Path) -> None:
+    """Keep a clean default-branch checkout current with the canonical remote.
+
+    Knowledge is reference material, so knowledge-only fast-forwards apply
+    silently. Anything that changes executable code or installed agent
+    surfaces is reported and left for explicit consent.
+    """
+    mode = _auto_update_mode()
+    if mode == "off":
+        return
+    target = _update_target(repo)
+    if target is None:
+        return
+    remote_name, default_branch, remote_ref = target
+    try:
+        if _run_git(repo, ["branch", "--show-current"]) != default_branch:
+            return
+        if _run_git(repo, ["status", "--porcelain"]):
+            return
+
+        state_path = _update_state_path(repo)
+        stored = _read_update_state(state_path)
+        now = int(time.time())
+        last_checked = stored.get("checked_utc")
+        due = (
+            not isinstance(last_checked, int)
+            or now - last_checked >= _update_interval()
+        )
+        if due:
+            if not _git_succeeds(
+                repo,
+                [
+                    "fetch",
+                    "--no-tags",
+                    "--quiet",
+                    remote_name,
+                    f"+refs/heads/{default_branch}:{remote_ref}",
+                ],
+            ):
+                return
+            stored["checked_utc"] = now
+            _write_update_state(state_path, stored)
+
+        local = _run_git(repo, ["rev-parse", "HEAD"])
+        if not _git_succeeds(repo, ["rev-parse", "--verify", remote_ref]):
+            return
+        remote = _run_git(repo, ["rev-parse", "--verify", remote_ref])
+        if local == remote:
+            return
+        if not _git_succeeds(repo, ["merge-base", "--is-ancestor", local, remote]):
+            return
+
+        paths = _incoming_paths(repo, local, remote)
+        if not paths:
+            return
+        knowledge, other = _partition_incoming(paths)
+        if other and mode != "all":
+            preview = ", ".join(other[:3])
+            more = f" (+{len(other) - 3} more)" if len(other) > 3 else ""
+            print(
+                f"UPDATE  {len(paths)} file(s) available from "
+                f"{remote_name}/{default_branch}; {len(other)} change executable "
+                f"code or installed surfaces: {preview}{more}",
+                file=sys.stderr,
+            )
+            print(
+                "UPDATE  review with 'aikb update', then apply with "
+                "'aikb update --all'",
+                file=sys.stderr,
+            )
+            return
+
+        if not _git_succeeds(repo, ["merge", "--ff-only", remote_ref]):
+            return
+        stored["applied_utc"] = now
+        stored["applied_commit"] = remote
+        _write_update_state(state_path, stored)
+        scope = "knowledge" if not other else "repository"
+        print(
+            f"UPDATE  applied {len(paths)} {scope} file(s) from "
+            f"{remote_name}/{default_branch} ({remote[:7]})",
+            file=sys.stderr,
+        )
+        if knowledge and not other:
+            print(
+                "UPDATE  knowledge is reference material; review it before "
+                "acting on new claims",
+                file=sys.stderr,
+            )
+    except HarnessError:
+        return
+
+
 def command_list(args: argparse.Namespace) -> int:
     state = _require_valid_state(args.repo, projection=True)
     print("AI knowledge namespaces")
@@ -1294,6 +1490,81 @@ def command_sync(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_update(args: argparse.Namespace) -> int:
+    repo = args.repo
+    target = _update_target(repo)
+    if target is None:
+        raise HarnessError(
+            "update refused: no configured remote matches the canonical repository"
+        )
+    remote_name, default_branch, remote_ref = target
+
+    branch = _run_git(repo, ["branch", "--show-current"])
+    if branch != default_branch:
+        raise HarnessError(
+            f"update refused: expected branch '{default_branch}', "
+            f"found '{branch or 'detached HEAD'}'"
+        )
+    if _run_git(repo, ["status", "--porcelain"]):
+        raise HarnessError("update refused: checkout has local changes")
+
+    _run_git(
+        repo,
+        [
+            "fetch",
+            "--no-tags",
+            remote_name,
+            f"+refs/heads/{default_branch}:{remote_ref}",
+        ],
+    )
+    state_path = _update_state_path(repo)
+    stored = _read_update_state(state_path)
+    stored["checked_utc"] = int(time.time())
+    _write_update_state(state_path, stored)
+
+    local = _run_git(repo, ["rev-parse", "HEAD"])
+    remote = _run_git(repo, ["rev-parse", "--verify", remote_ref])
+    if local == remote:
+        print(f"OK    already current with {remote_name}/{default_branch}")
+        return 0
+    if not _git_succeeds(repo, ["merge-base", "--is-ancestor", local, remote]):
+        raise HarnessError(
+            "update refused: local history has diverged from "
+            f"{remote_name}/{default_branch}"
+        )
+
+    paths = _incoming_paths(repo, local, remote)
+    knowledge, other = _partition_incoming(paths)
+    print(f"incoming: {len(paths)} file(s) from {remote_name}/{default_branch}")
+    print(f"  knowledge (auto-applies):        {len(knowledge)}")
+    print(f"  code or installed surfaces:      {len(other)}")
+    for path in other:
+        print(f"    {path}")
+
+    if args.check:
+        return 1
+
+    if other and not args.all:
+        print()
+        print("This update changes executable code or installed agent surfaces.")
+        print("Review it before applying:")
+        print(f'  git -C "{repo}" diff {local[:7]}..{remote[:7]}')
+        print("Apply after review:")
+        print("  aikb update --all")
+        return 1
+
+    _run_git(repo, ["merge", "--ff-only", remote_ref])
+    stored["applied_utc"] = int(time.time())
+    stored["applied_commit"] = remote
+    _write_update_state(state_path, stored)
+    _require_valid_state(repo, projection=True)
+    print()
+    print(f"OK    updated {remote_name}/{default_branch} to {remote[:7]}")
+    if other:
+        print("NOTE  installed surfaces may be stale; re-run the installer bootstrap")
+    return 0
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="aikb",
@@ -1385,6 +1656,22 @@ def _parser() -> argparse.ArgumentParser:
         "sync", help="fast-forward the clean checkout from its canonical remote"
     )
     sync_parser.set_defaults(handler=command_sync)
+
+    update_parser = subparsers.add_parser(
+        "update",
+        help="fast-forward from the canonical remote, gating code changes",
+    )
+    update_parser.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; return non-zero when an update is available",
+    )
+    update_parser.add_argument(
+        "--all",
+        action="store_true",
+        help="also apply changes to executable code and installed surfaces",
+    )
+    update_parser.set_defaults(handler=command_update)
     return parser
 
 
@@ -1396,6 +1683,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("--max must be at least 1")
     if hasattr(args, "context") and args.context < 0:
         parser.error("--context must not be negative")
+    if args.command in AUTO_UPDATE_COMMANDS:
+        _auto_update(args.repo)
     try:
         return int(args.handler(args))
     except HarnessError as exc:

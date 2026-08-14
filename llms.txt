@@ -41,6 +41,14 @@ macOS or Linux:
 Verify with `aikb check`, inspect routing with `aikb list`, and retrieve scoped
 knowledge with `aikb search "<query>"`.
 
+## Staying current
+
+Read commands fast-forward knowledge-only updates automatically, at most once
+per day, when the checkout is clean and on the default branch. Updates that
+change executable code or installed agent surfaces are reported and held for a
+human. Do not run `aikb update --all` on an agent's own initiative; it changes
+code that will run on the machine. `AIKB_AUTO_UPDATE=off` disables the check.
+
 ## Authorized contribution
 
 1. Read CONTRIBUTING.md and AGENTS.md.
