@@ -259,5 +259,46 @@ class AikbSanitizeCommandTests(unittest.TestCase):
         self.assertEqual(result.stdout, "a-b")
 
 
+class LauncherExitCodeTests(unittest.TestCase):
+    """The Windows launcher must propagate the interpreter's exit code.
+
+    Regression guard: discovery used parenthesised if-blocks, and cmd expands
+    %ERRORLEVEL% when it parses a whole block, so the launcher reported the
+    result of `where` instead of the result of Python and always exited 0.
+    Every failure looked like success to any Windows script or hook.
+    """
+
+    LAUNCHER = REPO / "bin" / "aikb.cmd"
+
+    def _run(self, *args: str) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [str(self.LAUNCHER), "--repo", str(REPO), *args],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=60,
+        )
+
+    @unittest.skipUnless(os.name == "nt", "cmd launcher is Windows only")
+    def test_success_exits_zero(self) -> None:
+        self.assertEqual(self._run("validate").returncode, 0)
+
+    @unittest.skipUnless(os.name == "nt", "cmd launcher is Windows only")
+    def test_characterized_failure_exits_two(self) -> None:
+        self.assertEqual(self._run("show", "does/not/exist.md").returncode, 2)
+
+    @unittest.skipUnless(os.name == "nt", "cmd launcher is Windows only")
+    def test_invalid_subcommand_is_not_reported_as_success(self) -> None:
+        self.assertNotEqual(self._run("no-such-command").returncode, 0)
+
+    @unittest.skipUnless(os.name == "nt", "cmd launcher is Windows only")
+    def test_sanitize_findings_exit_one(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            (Path(raw) / "dirty.md").write_text(f"a{ZWSP}b\n", encoding="utf-8")
+            self.assertEqual(self._run("sanitize", raw).returncode, 1)
+
+
 if __name__ == "__main__":
     unittest.main()
