@@ -47,6 +47,7 @@ aikb sanitize path/to/file --write
 | Inducing a rule from formal grid/state pairs | `reasoning.rule-induction.grid` |
 | Answering from financial tables, charts, or filings | `knowledge.finance.evidence-synthesis` |
 | Declaring work done/fixed or writing a gate | `engineering.verification.external-evidence` |
+| Producing or reusing decks, documents, or other rendered artifacts | `engineering.verification.external-evidence.rendered-artifacts` |
 | Building/debugging RAG or routed retrieval | `retrieval.rag.empirical` |
 | Designing knowledge storage, conflict, replay, or GC | `knowledge.systems.integrity` |
 | Verified work exposes a reusable harness gap | `knowledge.harness.evolution` |

@@ -57,6 +57,7 @@ database, key service, or authorization plane. See
 | `engineering.repair.root-cause` | Diagnose causes before patching symptoms. |
 | `engineering.repair.root-cause.python-packages` | Specialize root-cause repair for Python package failures. |
 | `engineering.verification.external-evidence` | Require independent evidence before declaring work complete. |
+| `engineering.verification.external-evidence.rendered-artifacts` | Build and accept rendered deliverables on inspected output, not object-model success. |
 | `reasoning.rule-induction.grid` | Induce and test rules from formal grid/state examples. |
 | `knowledge.finance.evidence-synthesis` | Preserve provenance while synthesizing financial evidence. |
 | `retrieval.rag.empirical` | Apply retained findings from empirical RAG and retrieval work. |
