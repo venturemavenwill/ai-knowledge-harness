@@ -39,6 +39,16 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--authority", choices=AUTHORITIES, required=True)
     parser.add_argument("--extends")
     parser.add_argument("--consult-when", action="append", required=True)
+    parser.add_argument(
+        "--routing-summary",
+        required=True,
+        help="short situational label, used to generate the routing table",
+    )
+    parser.add_argument(
+        "--capability-summary",
+        required=True,
+        help="one sentence on what this adds, used to generate the README table",
+    )
     return parser
 
 
@@ -82,6 +92,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "authority": args.authority,
         "extends": args.extends,
         "consult_when": args.consult_when,
+        "routing_summary": args.routing_summary,
+        "capability_summary": args.capability_summary,
         "entry_points": [],
         "search_paths": ["claims"],
     }
@@ -98,6 +110,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     print("  2. replace every placeholder and add the claim path to entry_points")
     print("  3. run: python bin/aikb.py validate")
     print("  4. run: python bin/aikb.py refresh")
+    print("     the routing tables regenerate from routing_summary and")
+    print("     capability_summary; do not hand-edit the generated blocks")
     return 0
 
 

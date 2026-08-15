@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "reasoning.rule-induction.grid",
+  "generation": 2,
+  "supersedes": "manifests/0001.json",
+  "title": "Formal grid and state-transition rule induction",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": null,
+  "consult_when": [
+    "inducing a transformation rule from input/output pairs over a grid or formal state representation",
+    "testing rival latent rules with exact reproduction and distinguishing counterexamples"
+  ],
+  "routing_summary": "Inducing a rule from formal grid/state pairs",
+  "capability_summary": "Induce and test rules from formal grid/state examples.",
+  "entry_points": [
+    "claims/spec.reasoning.rule-induction.grid--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

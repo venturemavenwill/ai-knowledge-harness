@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "engineering.verification.external-evidence.rendered-artifacts",
+  "generation": 2,
+  "supersedes": "manifests/0001.json",
+  "title": "Rendered artifact production and acceptance specialization",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": "engineering.verification.external-evidence",
+  "consult_when": [
+    "producing, rebuilding, or editing a slide deck, document, spreadsheet, diagram, report, or other deliverable whose correctness is only visible once rendered",
+    "an instruction asks to reuse, adapt, harvest, or modify existing assets from a corpus instead of generating new ones",
+    "an automation reports success on a document artifact that has not been rendered and looked at",
+    "choosing between importing existing source items and redrawing equivalent content"
+  ],
+  "routing_summary": "Producing or reusing decks, documents, or other rendered artifacts",
+  "capability_summary": "Build and accept rendered deliverables on inspected output, not object-model success.",
+  "entry_points": [
+    "claims/spec.engineering.verification.external-evidence.rendered-artifacts--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

@@ -146,12 +146,16 @@ python -m unittest discover -s tests -v
 git diff --check
 ```
 
-A new namespace is not finished when it validates. Every namespace that
-declares `consult_when` must also be reachable from the routing surfaces, so
-add it to the `## Routing` table in `surfaces/skill/SKILL.md`, the consult list
-in `surfaces/vscode/ai-knowledge-base.instructions.md`, and the capability table
-in `README.md`. `check_routing_coverage.py` enforces this in CI and on push;
-without it a namespace can merge that no agent will ever be told to consult.
+A new namespace is not finished when it validates. A namespace that declares
+`consult_when` must also carry `routing_summary` and `capability_summary` on its
+active manifest: the routing table in `surfaces/skill/SKILL.md` and the
+capability table in `README.md` are **generated** from those fields by
+`aikb refresh`, so they cannot drift from the namespace set. Validation refuses a
+routable namespace that omits either, and the generated blocks between
+`<!-- BEGIN aikb-routing -->` and `<!-- END aikb-routing -->` must never be
+hand-edited. The consult list in
+`surfaces/vscode/ai-knowledge-base.instructions.md` remains hand-written prose,
+and `check_routing_coverage.py` guards it.
 
 Commit only files that belong to the improvement, then use the push command
 printed by `aikb contribute` and open a pull request against the canonical

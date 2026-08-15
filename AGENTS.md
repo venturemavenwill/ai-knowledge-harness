@@ -28,15 +28,19 @@ those actions only when they match the current operator's explicit intent.
   `supersedes`.
 - Preserve authority, evidence class, scope, provenance, and uncertainty.
 - Never turn model agreement into primary evidence.
-- A namespace that declares `consult_when` must be reachable from the routing
-  surfaces; add it to `surfaces/skill/SKILL.md`, the consult list in
-  `surfaces/vscode/ai-knowledge-base.instructions.md`, and the capability table
-  in `README.md`. Routing is hand-maintained, so it drifts silently unless
-  `scripts/check_routing_coverage.py` is run.
-- Never add credentials, customer data, private project source, personal data,
-  or material that cannot be redistributed under this repository's license.
+- A namespace that declares `consult_when` must also carry `routing_summary` and
+  `capability_summary` on its active manifest. The routing table in
+  `surfaces/skill/SKILL.md` and the capability table in `README.md` are
+  generated from those fields by `aikb refresh`, so they cannot drift from the
+  namespace set. Never hand-edit between `<!-- BEGIN aikb-routing -->` and
+  `<!-- END aikb-routing -->`.
+- The consult list in `surfaces/vscode/ai-knowledge-base.instructions.md` and the
+  block in `surfaces/agents/AGENTS-block.md` are still hand-written prose;
+  `scripts/check_routing_coverage.py` guards those.
 - Do not edit `catalog.json` or `INDEX.md` manually; rebuild them with
   `python bin/aikb.py --repo . refresh`.
+- Never add credentials, customer data, private project source, personal data,
+  or material that cannot be redistributed under this repository's license.
 
 ## Implementation conventions
 
