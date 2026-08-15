@@ -16,6 +16,22 @@ CLI = REPO / "bin" / "aikb.py"
 NEW_NAMESPACE = REPO / "scripts" / "new_namespace.py"
 
 
+def active_manifest(repo: Path, namespace: str) -> Path:
+    """Highest-generation manifest for a namespace.
+
+    Tests must not hardcode 0001.json: once a namespace gains a later
+    generation, editing generation 1 changes a superseded record and the test
+    silently stops exercising what it claims to.
+    """
+    manifests = sorted((repo / "namespaces" / namespace / "manifests").glob("*.json"))
+    if not manifests:
+        raise AssertionError(f"no manifests for {namespace}")
+    return max(
+        manifests,
+        key=lambda path: json.loads(path.read_text(encoding="utf-8"))["generation"],
+    )
+
+
 def run_cli(
     *args: str, repo: Path = REPO, env: dict[str, str] | None = None
 ) -> subprocess.CompletedProcess[str]:
@@ -392,13 +408,7 @@ class HarnessTests(unittest.TestCase):
     def test_namespace_specialization_cycle_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             repo = copy_repository(Path(temp))
-            manifest_path = (
-                repo
-                / "namespaces"
-                / "engineering.repair.root-cause"
-                / "manifests"
-                / "0001.json"
-            )
+            manifest_path = active_manifest(repo, "engineering.repair.root-cause")
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             manifest["extends"] = "engineering.repair.root-cause.python-packages"
             manifest_path.write_text(
@@ -413,13 +423,7 @@ class HarnessTests(unittest.TestCase):
     def test_missing_specialization_parent_fails_projection_cleanly(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             repo = copy_repository(Path(temp))
-            manifest_path = (
-                repo
-                / "namespaces"
-                / "engineering.repair.root-cause"
-                / "manifests"
-                / "0001.json"
-            )
+            manifest_path = active_manifest(repo, "engineering.repair.root-cause")
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             manifest["extends"] = "engineering.repair.root-cause.missing"
             manifest_path.write_text(
@@ -478,6 +482,10 @@ class HarnessTests(unittest.TestCase):
                     "engineering.repair.root-cause",
                     "--consult-when",
                     "debugging or repairing a Go package",
+                    "--routing-summary",
+                    "Debugging Go packaging/import/runtime defects",
+                    "--capability-summary",
+                    "Specialize root-cause repair for Go package failures.",
                 ],
                 check=False,
                 capture_output=True,

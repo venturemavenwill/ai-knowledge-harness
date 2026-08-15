@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "knowledge.systems.integrity",
+  "generation": 2,
+  "supersedes": "manifests/0001.json",
+  "title": "Knowledge-system integrity constraints",
+  "kind": "design-substrate",
+  "authority": "reference-only",
+  "extends": null,
+  "consult_when": [
+    "designing a system that stores, reconciles, retrieves, or garbage-collects knowledge",
+    "handling conflicting claims, derived output, provenance, or namespace boundaries"
+  ],
+  "routing_summary": "Designing knowledge storage, conflict, replay, or GC",
+  "capability_summary": "Design replayable knowledge systems with explicit conflicts and trust.",
+  "entry_points": [
+    "claims/design.knowledge.systems.integrity--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

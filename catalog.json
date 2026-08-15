@@ -39,10 +39,10 @@
         "engineering.repair.root-cause"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/engineering.repair.root-cause/manifests/0001.json",
-        "sha256": "7c377ddb87a97a2f6ef89daf6c5bfca7af765a4581dd7ad0707b3582dfe758aa",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/engineering.repair.root-cause/manifests/0002.json",
+        "sha256": "6185ad667e037a36e6af397c13e982c73085da10842a8933e68622e22656b24e",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -50,6 +50,12 @@
           "path": "namespaces/engineering.repair.root-cause/manifests/0001.json",
           "sha256": "7c377ddb87a97a2f6ef89daf6c5bfca7af765a4581dd7ad0707b3582dfe758aa",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/engineering.repair.root-cause/manifests/0002.json",
+          "sha256": "6185ad667e037a36e6af397c13e982c73085da10842a8933e68622e22656b24e",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "engineering.repair.root-cause",
@@ -98,10 +104,10 @@
         "engineering.repair.root-cause.python-packages"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/engineering.repair.root-cause.python-packages/manifests/0001.json",
-        "sha256": "971ba6dd752bc13a3f1348d6cb54ba16bd3643e112485580959637b85246cc7e",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/engineering.repair.root-cause.python-packages/manifests/0002.json",
+        "sha256": "53c9afe8f2ac7a99fc6b8754e484cbc01ed07f8f74ba287c75a719d76a83825c",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -109,6 +115,12 @@
           "path": "namespaces/engineering.repair.root-cause.python-packages/manifests/0001.json",
           "sha256": "971ba6dd752bc13a3f1348d6cb54ba16bd3643e112485580959637b85246cc7e",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/engineering.repair.root-cause.python-packages/manifests/0002.json",
+          "sha256": "53c9afe8f2ac7a99fc6b8754e484cbc01ed07f8f74ba287c75a719d76a83825c",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "engineering.repair.root-cause.python-packages",
@@ -158,10 +170,10 @@
         "engineering.verification.external-evidence"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/engineering.verification.external-evidence/manifests/0001.json",
-        "sha256": "dea28105d529fbc54106534ec6e64be522dfc436cfe656f6c22168be3c44fa59",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/engineering.verification.external-evidence/manifests/0002.json",
+        "sha256": "bf675753d0c703b316efa5b67363a2246f4f7f5d286f485f73583022e6283968",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -169,6 +181,12 @@
           "path": "namespaces/engineering.verification.external-evidence/manifests/0001.json",
           "sha256": "dea28105d529fbc54106534ec6e64be522dfc436cfe656f6c22168be3c44fa59",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/engineering.verification.external-evidence/manifests/0002.json",
+          "sha256": "bf675753d0c703b316efa5b67363a2246f4f7f5d286f485f73583022e6283968",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "engineering.verification.external-evidence",
@@ -224,10 +242,10 @@
         "engineering.verification.external-evidence.rendered-artifacts"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0001.json",
-        "sha256": "57d50de1ed189019d133647e714e3867edada0ef1825a9157830d27b012e5e7a",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0002.json",
+        "sha256": "2fc64695d89a61f2162a769e144d5d592f9ad60b0f5ffc320c26f37f7ebbfa54",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -235,6 +253,12 @@
           "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0001.json",
           "sha256": "57d50de1ed189019d133647e714e3867edada0ef1825a9157830d27b012e5e7a",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0002.json",
+          "sha256": "2fc64695d89a61f2162a769e144d5d592f9ad60b0f5ffc320c26f37f7ebbfa54",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "engineering.verification.external-evidence.rendered-artifacts",
@@ -283,10 +307,10 @@
         "guard.autonomy.tool-intent"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/guard.autonomy.tool-intent/manifests/0001.json",
-        "sha256": "15f7a74e5e39a75f9d01c94b18e29da6c7d3876bdc5b8f265366741dc0219ae2",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/guard.autonomy.tool-intent/manifests/0002.json",
+        "sha256": "a0b007d262c8a64aa1c8a6ff984be11003997feb2ed9c4c45d11f989cbafedb1",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -294,6 +318,12 @@
           "path": "namespaces/guard.autonomy.tool-intent/manifests/0001.json",
           "sha256": "15f7a74e5e39a75f9d01c94b18e29da6c7d3876bdc5b8f265366741dc0219ae2",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/guard.autonomy.tool-intent/manifests/0002.json",
+          "sha256": "a0b007d262c8a64aa1c8a6ff984be11003997feb2ed9c4c45d11f989cbafedb1",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "guard.autonomy.tool-intent",
@@ -342,10 +372,10 @@
         "guard.output.text-integrity"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/guard.output.text-integrity/manifests/0001.json",
-        "sha256": "50a1ab572c9461e31998bad664ab1643e036c5c65676919560a44ffd0be3a43d",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/guard.output.text-integrity/manifests/0002.json",
+        "sha256": "f91de34d5b9de0322fa53ac95128138929651b37469c0dae3c5163f75a751631",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -353,6 +383,12 @@
           "path": "namespaces/guard.output.text-integrity/manifests/0001.json",
           "sha256": "50a1ab572c9461e31998bad664ab1643e036c5c65676919560a44ffd0be3a43d",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/guard.output.text-integrity/manifests/0002.json",
+          "sha256": "f91de34d5b9de0322fa53ac95128138929651b37469c0dae3c5163f75a751631",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "guard.output.text-integrity",
@@ -402,10 +438,10 @@
         "knowledge.finance.evidence-synthesis"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/knowledge.finance.evidence-synthesis/manifests/0001.json",
-        "sha256": "8f97a21a6ece5f6a593185de9d023fc19c5f59bca5c708e058f4dcefd76b5ae5",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/knowledge.finance.evidence-synthesis/manifests/0002.json",
+        "sha256": "19e102692a71418f95ebca7fc38fda87349112e6f9e59c434a564ddc9dfd9efe",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -413,6 +449,12 @@
           "path": "namespaces/knowledge.finance.evidence-synthesis/manifests/0001.json",
           "sha256": "8f97a21a6ece5f6a593185de9d023fc19c5f59bca5c708e058f4dcefd76b5ae5",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/knowledge.finance.evidence-synthesis/manifests/0002.json",
+          "sha256": "19e102692a71418f95ebca7fc38fda87349112e6f9e59c434a564ddc9dfd9efe",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "knowledge.finance.evidence-synthesis",
@@ -462,10 +504,10 @@
         "knowledge.harness.evolution"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/knowledge.harness.evolution/manifests/0001.json",
-        "sha256": "bc3abfcb4b82e874339d2cff81d9fc3853bd15ef8c5778fbc207d4407e8aba69",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/knowledge.harness.evolution/manifests/0002.json",
+        "sha256": "aa43c8bcf09f9f7a213a31e6f40ce86fa3ece8c7ed9514b4f82de5c6edbc4ccf",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -473,6 +515,12 @@
           "path": "namespaces/knowledge.harness.evolution/manifests/0001.json",
           "sha256": "bc3abfcb4b82e874339d2cff81d9fc3853bd15ef8c5778fbc207d4407e8aba69",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/knowledge.harness.evolution/manifests/0002.json",
+          "sha256": "aa43c8bcf09f9f7a213a31e6f40ce86fa3ece8c7ed9514b4f82de5c6edbc4ccf",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "knowledge.harness.evolution",
@@ -521,10 +569,10 @@
         "knowledge.systems.integrity"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/knowledge.systems.integrity/manifests/0001.json",
-        "sha256": "d091ddc6c4bd458be6444a487f898a99cd9f882feeb7cdf011c244aae45d47e4",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/knowledge.systems.integrity/manifests/0002.json",
+        "sha256": "3de7e6541f834af579ed2d9657e9cc0432b7b23f611a35e029a8b0a258a2c19a",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -532,6 +580,12 @@
           "path": "namespaces/knowledge.systems.integrity/manifests/0001.json",
           "sha256": "d091ddc6c4bd458be6444a487f898a99cd9f882feeb7cdf011c244aae45d47e4",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/knowledge.systems.integrity/manifests/0002.json",
+          "sha256": "3de7e6541f834af579ed2d9657e9cc0432b7b23f611a35e029a8b0a258a2c19a",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "knowledge.systems.integrity",
@@ -580,10 +634,10 @@
         "reasoning.rule-induction.grid"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/reasoning.rule-induction.grid/manifests/0001.json",
-        "sha256": "3cffb101f94bf4d2bdfa5974acdb3d0292b99bf91bca93ff0786fb69dfb97109",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/reasoning.rule-induction.grid/manifests/0002.json",
+        "sha256": "10f84250668ca547a39430aa58f7b58c6fe717f181e64cd0d6e00eb7ec06efb7",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -591,6 +645,12 @@
           "path": "namespaces/reasoning.rule-induction.grid/manifests/0001.json",
           "sha256": "3cffb101f94bf4d2bdfa5974acdb3d0292b99bf91bca93ff0786fb69dfb97109",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/reasoning.rule-induction.grid/manifests/0002.json",
+          "sha256": "10f84250668ca547a39430aa58f7b58c6fe717f181e64cd0d6e00eb7ec06efb7",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "reasoning.rule-induction.grid",
@@ -775,10 +835,10 @@
         "retrieval.rag.empirical"
       ],
       "manifest": {
-        "generation": 2,
-        "path": "namespaces/retrieval.rag.empirical/manifests/0002.json",
-        "sha256": "dd9bffe1a748fe33ff233c4134040dd103ece496b9ed30938b441098221a45fb",
-        "supersedes": "manifests/0001.json"
+        "generation": 3,
+        "path": "namespaces/retrieval.rag.empirical/manifests/0003.json",
+        "sha256": "8dbc93c6695a383a26a38ff295d88d87c351971b0f5243d025be0940c1a07aa8",
+        "supersedes": "manifests/0002.json"
       },
       "manifest_history": [
         {
@@ -792,6 +852,12 @@
           "path": "namespaces/retrieval.rag.empirical/manifests/0002.json",
           "sha256": "dd9bffe1a748fe33ff233c4134040dd103ece496b9ed30938b441098221a45fb",
           "supersedes": "manifests/0001.json"
+        },
+        {
+          "generation": 3,
+          "path": "namespaces/retrieval.rag.empirical/manifests/0003.json",
+          "sha256": "8dbc93c6695a383a26a38ff295d88d87c351971b0f5243d025be0940c1a07aa8",
+          "supersedes": "manifests/0002.json"
         }
       ],
       "namespace": "retrieval.rag.empirical",

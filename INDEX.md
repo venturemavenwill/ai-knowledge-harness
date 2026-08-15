@@ -22,17 +22,17 @@ aikb check
 
 | Namespace | Kind | Extends | Claims |
 |---|---|---|---:|
-| [`engineering.repair.root-cause`](namespaces/engineering.repair.root-cause/manifests/0001.json) | capability-procedure | - | 1 |
-| [`engineering.repair.root-cause.python-packages`](namespaces/engineering.repair.root-cause.python-packages/manifests/0001.json) | capability-procedure | engineering.repair.root-cause | 1 |
-| [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0001.json) | working-discipline | - | 1 |
-| [`engineering.verification.external-evidence.rendered-artifacts`](namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0001.json) | capability-procedure | engineering.verification.external-evidence | 1 |
-| [`guard.autonomy.tool-intent`](namespaces/guard.autonomy.tool-intent/manifests/0001.json) | capability-procedure | - | 1 |
-| [`guard.output.text-integrity`](namespaces/guard.output.text-integrity/manifests/0001.json) | capability-procedure | - | 1 |
-| [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0001.json) | capability-procedure | - | 1 |
-| [`knowledge.harness.evolution`](namespaces/knowledge.harness.evolution/manifests/0001.json) | working-discipline | knowledge.systems.integrity | 1 |
-| [`knowledge.systems.integrity`](namespaces/knowledge.systems.integrity/manifests/0001.json) | design-substrate | - | 1 |
-| [`reasoning.rule-induction.grid`](namespaces/reasoning.rule-induction.grid/manifests/0001.json) | capability-procedure | - | 1 |
-| [`retrieval.rag.empirical`](namespaces/retrieval.rag.empirical/manifests/0002.json) | empirical-findings | - | 7 |
+| [`engineering.repair.root-cause`](namespaces/engineering.repair.root-cause/manifests/0002.json) | capability-procedure | - | 1 |
+| [`engineering.repair.root-cause.python-packages`](namespaces/engineering.repair.root-cause.python-packages/manifests/0002.json) | capability-procedure | engineering.repair.root-cause | 1 |
+| [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0002.json) | working-discipline | - | 1 |
+| [`engineering.verification.external-evidence.rendered-artifacts`](namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0002.json) | capability-procedure | engineering.verification.external-evidence | 1 |
+| [`guard.autonomy.tool-intent`](namespaces/guard.autonomy.tool-intent/manifests/0002.json) | capability-procedure | - | 1 |
+| [`guard.output.text-integrity`](namespaces/guard.output.text-integrity/manifests/0002.json) | capability-procedure | - | 1 |
+| [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0002.json) | capability-procedure | - | 1 |
+| [`knowledge.harness.evolution`](namespaces/knowledge.harness.evolution/manifests/0002.json) | working-discipline | knowledge.systems.integrity | 1 |
+| [`knowledge.systems.integrity`](namespaces/knowledge.systems.integrity/manifests/0002.json) | design-substrate | - | 1 |
+| [`reasoning.rule-induction.grid`](namespaces/reasoning.rule-induction.grid/manifests/0002.json) | capability-procedure | - | 1 |
+| [`retrieval.rag.empirical`](namespaces/retrieval.rag.empirical/manifests/0003.json) | empirical-findings | - | 7 |
 
 ## `engineering.repair.root-cause`
 

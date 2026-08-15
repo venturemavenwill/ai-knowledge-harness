@@ -71,6 +71,18 @@
         "minLength": 1
       }
     },
+    "routing_summary": {
+      "description": "Short situational label used to generate the routing tables. Required on the active manifest of any namespace that declares consult_when.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "capability_summary": {
+      "description": "One sentence describing what the namespace adds, used to generate the README capability table. Required on the active manifest of any namespace that declares consult_when.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
     "entry_points": {
       "type": "array",
       "uniqueItems": true,

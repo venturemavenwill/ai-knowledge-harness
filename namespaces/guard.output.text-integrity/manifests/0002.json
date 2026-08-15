@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "guard.output.text-integrity",
+  "generation": 2,
+  "supersedes": "manifests/0001.json",
+  "title": "Generated text integrity",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": null,
+  "consult_when": [
+    "writing generated text to a file, commit, pull request, issue, or review comment",
+    "reviewing or accepting text that may carry invisible, bidirectional, or smuggled Unicode characters"
+  ],
+  "routing_summary": "Writing generated text to a file, commit, or published comment",
+  "capability_summary": "Strip invisible, bidirectional, and smuggled Unicode from generated text before it is written.",
+  "entry_points": [
+    "claims/spec.guard.output.text-integrity--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}
