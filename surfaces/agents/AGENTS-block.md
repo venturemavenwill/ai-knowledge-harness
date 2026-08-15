@@ -10,10 +10,17 @@ configuration. Do not inherit another project's build loop, state files, gates,
 or commit conventions.
 
 Consult `guard.autonomy.tool-intent` before non-read actions,
-`engineering.repair.root-cause` for defects,
+`guard.output.text-integrity` before writing generated text to a file or
+comment, `engineering.repair.root-cause` for defects,
 `engineering.verification.external-evidence` before declaring work done,
 `retrieval.rag.empirical` for retrieval, and the other namespaces listed by
 `aikb list`. Preserve authority, scope, provenance, and evidence status.
+
+Generated text can carry characters that survive copy-paste but never render,
+including bidirectional controls and Unicode tag characters. Run
+`aikb sanitize <path>` before writing generated text to a file, commit, or
+published comment; add `--write` to clean it. Report a tag-character finding to
+the operator rather than deleting it silently.
 
 After verified work exposes a reusable harness gap, search before proposing a
 change and consult `knowledge.harness.evolution`. If current operator intent

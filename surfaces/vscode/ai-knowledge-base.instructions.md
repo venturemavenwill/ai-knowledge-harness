@@ -14,6 +14,8 @@ current operator or the current project's authoritative files.
 Consult:
 
 - `guard.autonomy.tool-intent` before non-read actions;
+- `guard.output.text-integrity` before writing generated text to a file,
+  commit, or published comment;
 - `engineering.repair.root-cause` for software defects;
 - `engineering.repair.root-cause.python-packages` for Python-specific defects;
 - `reasoning.rule-induction.grid` for formal grid/state induction;
@@ -27,6 +29,15 @@ Consult:
 Use `aikb list`, `aikb search`, `aikb show`, `aikb lineage`, and `aikb check`.
 Carry authority, scope, provenance, and evidence class into conclusions. Do not
 turn a reported summary or model consensus into a primary measurement.
+
+## Generated text integrity
+
+Generated text can carry characters that survive copy-paste but never render.
+Run `aikb sanitize <path>` before writing generated text to a file, commit, or
+published comment, and `--write` to clean it. Defaults are conservative: emoji
+joiners, variation selectors, and curly typography are preserved. Treat a
+tag-character finding as a security signal and report it rather than deleting
+it quietly.
 
 ## Harness improvement feedback loop
 

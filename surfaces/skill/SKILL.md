@@ -29,6 +29,7 @@ aikb status
 aikb check
 aikb update
 aikb contribute concise-gap-slug
+aikb sanitize path/to/file --write
 ```
 
 `show` is confined to knowledge namespaces and documented entry points.
@@ -40,6 +41,7 @@ aikb contribute concise-gap-slug
 | Situation | Namespace |
 |---|---|
 | Before any non-read tool action | `guard.autonomy.tool-intent` |
+| Writing generated text to a file, commit, or published comment | `guard.output.text-integrity` |
 | Debugging or repairing software | `engineering.repair.root-cause` |
 | Debugging Python packaging/import/runtime defects | `engineering.repair.root-cause.python-packages` |
 | Inducing a rule from formal grid/state pairs | `reasoning.rule-induction.grid` |
@@ -52,6 +54,27 @@ aikb contribute concise-gap-slug
 Search before asserting. Preserve each claim's authority, evidence status,
 scope, provenance, and limitations. A `reported-summary` is not promoted to a
 primary measurement merely because it is convenient.
+
+## Generated text integrity
+
+Model output can carry characters that survive copy-paste but never render:
+zero-width spaces, bidirectional controls, and Unicode tag characters. The last
+two are an attack surface, not a cosmetic issue, because a reviewer and a
+compiler can be shown different content.
+
+Check before writing generated text to a file, commit, or published comment:
+
+```text
+aikb sanitize <path>            # report only, non-zero when found
+aikb sanitize <path> --write    # rewrite in place
+aikb sanitize --stdin           # clean a pipeline
+```
+
+Removal defaults are conservative: emoji joiners, variation selectors, and
+curly typography are preserved, because stripping them corrupts valid text.
+Report a tag-character finding to the operator instead of silently deleting it;
+its presence means the content has an unknown origin. Consult
+`guard.output.text-integrity` before widening what is removed.
 
 ## Staying current
 

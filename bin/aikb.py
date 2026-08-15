@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -1440,6 +1441,31 @@ def command_refresh(args: argparse.Namespace) -> int:
     return 0
 
 
+def _load_sanitizer(repo: Path) -> Any:
+    """Load the sanitizer from the checkout so both entry points share one table."""
+    script = repo / "scripts" / "strip_hidden_chars.py"
+    if not script.is_file():
+        raise HarnessError(f"missing sanitizer script: {script}")
+    spec = importlib.util.spec_from_file_location("aikb_strip_hidden_chars", script)
+    if spec is None or spec.loader is None:
+        raise HarnessError(f"cannot load sanitizer script: {script}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def command_sanitize(args: argparse.Namespace) -> int:
+    module = _load_sanitizer(args.repo)
+    argv: list[str] = [str(path) for path in args.paths]
+    for flag in ("stdin", "write", "keep_bidi", "strip_joiners", "no_whitespace",
+                 "typography", "all_extensions", "quiet"):
+        if getattr(args, flag):
+            argv.append("--" + flag.replace("_", "-"))
+    for extension in args.ext or []:
+        argv.extend(["--ext", extension])
+    return int(module.main(argv))
+
+
 def command_contribute(args: argparse.Namespace) -> int:
     state = _require_valid_state(args.repo, projection=True)
     if (
@@ -1770,6 +1796,42 @@ def _parser() -> argparse.ArgumentParser:
         help="write nothing; return non-zero when projections are stale",
     )
     refresh_parser.set_defaults(handler=command_refresh)
+
+    sanitize_parser = subparsers.add_parser(
+        "sanitize",
+        help="remove hidden and smuggled Unicode characters from text",
+    )
+    sanitize_parser.add_argument("paths", nargs="*", type=Path)
+    sanitize_parser.add_argument(
+        "--stdin", action="store_true", help="clean stdin to stdout"
+    )
+    sanitize_parser.add_argument(
+        "--write",
+        action="store_true",
+        help="rewrite files in place (default: report only, non-zero when found)",
+    )
+    sanitize_parser.add_argument(
+        "--keep-bidi", action="store_true", help="preserve bidirectional controls"
+    )
+    sanitize_parser.add_argument(
+        "--strip-joiners",
+        action="store_true",
+        help="also remove ZWJ, ZWNJ, and variation selectors (breaks some emoji)",
+    )
+    sanitize_parser.add_argument(
+        "--no-whitespace",
+        action="store_true",
+        help="do not fold exotic spaces to ASCII space",
+    )
+    sanitize_parser.add_argument(
+        "--typography",
+        action="store_true",
+        help="also fold curly quotes, dashes, and ellipsis to ASCII",
+    )
+    sanitize_parser.add_argument("--ext", action="append")
+    sanitize_parser.add_argument("--all-extensions", action="store_true")
+    sanitize_parser.add_argument("--quiet", action="store_true")
+    sanitize_parser.set_defaults(handler=command_sanitize)
 
     contribute_parser = subparsers.add_parser(
         "contribute",
