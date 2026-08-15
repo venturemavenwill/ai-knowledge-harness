@@ -25,6 +25,7 @@ aikb check
 | [`engineering.repair.root-cause`](namespaces/engineering.repair.root-cause/manifests/0001.json) | capability-procedure | - | 1 |
 | [`engineering.repair.root-cause.python-packages`](namespaces/engineering.repair.root-cause.python-packages/manifests/0001.json) | capability-procedure | engineering.repair.root-cause | 1 |
 | [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0001.json) | working-discipline | - | 1 |
+| [`engineering.verification.external-evidence.rendered-artifacts`](namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0001.json) | capability-procedure | engineering.verification.external-evidence | 1 |
 | [`guard.autonomy.tool-intent`](namespaces/guard.autonomy.tool-intent/manifests/0001.json) | capability-procedure | - | 1 |
 | [`guard.output.text-integrity`](namespaces/guard.output.text-integrity/manifests/0001.json) | capability-procedure | - | 1 |
 | [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0001.json) | capability-procedure | - | 1 |
@@ -75,6 +76,22 @@ External evidence and verification ladders
   - writing an acceptance gate or deciding which evidence tier to buy
 - **Claims:**
   - [`method.engineering.verification.external-evidence@1.0.0`](namespaces/engineering.verification.external-evidence/claims/method.engineering.verification.external-evidence--1.0.0.md) [reference-only; active] — A claim that work is done or correct must come from an external check, and acceptance should climb from structure through integration and specification to adversarial mutation rather than accumulating low-tier clean runs.
+
+## `engineering.verification.external-evidence.rendered-artifacts`
+
+Rendered artifact production and acceptance specialization
+
+- **Kind:** capability-procedure
+- **Authority:** hand-authored-unmeasured
+- **Extends:** engineering.verification.external-evidence
+- **Lineage:** engineering.verification.external-evidence -> engineering.verification.external-evidence.rendered-artifacts
+- **Consult when:**
+  - an automation reports success on a document artifact that has not been rendered and looked at
+  - an instruction asks to reuse, adapt, harvest, or modify existing assets from a corpus instead of generating new ones
+  - choosing between importing existing source items and redrawing equivalent content
+  - producing, rebuilding, or editing a slide deck, document, spreadsheet, diagram, report, or other deliverable whose correctness is only visible once rendered
+- **Claims:**
+  - [`spec.engineering.verification.external-evidence.rendered-artifacts@1.0.0`](namespaces/engineering.verification.external-evidence.rendered-artifacts/claims/spec.engineering.verification.external-evidence.rendered-artifacts--1.0.0.md) [hand-authored; active] — When a deliverable's correctness is only observable once rendered, object-model success is structural evidence only; the work must be driven through an addressable, re-runnable transform over explicitly selected source items and accepted on inspected renders plus machine-checkable layout, coverage, and residue invariants.
 
 ## `guard.autonomy.tool-intent`
 
