@@ -47,6 +47,9 @@ jobs:
       - name: Verify deterministic replay
         run: python bin/aikb.py refresh --check
 
+      - name: Verify routing surfaces cover every namespace
+        run: python scripts/check_routing_coverage.py
+
       - name: Verify append-only pull request history
         if: github.event_name == 'pull_request'
         run: python scripts/check_append_only.py --base-ref "${{ github.event.pull_request.base.sha }}"
