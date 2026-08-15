@@ -241,6 +241,65 @@
       "claims": [
         {
           "authority": "hand-authored",
+          "claim_id": "spec.guard.output.text-integrity",
+          "claim_ref": "spec.guard.output.text-integrity@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "Generated text must be stripped of invisible, bidirectional, and Unicode tag characters before it is written to a file, commit, or published comment, because those characters survive copy-paste while remaining absent from human review.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/guard.output.text-integrity/claims/spec.guard.output.text-integrity--1.0.0.md",
+          "sha256": "195caec9f8221de699c7f8d8ded8b1cd4401262b358ef4ed0a12e319a4387fca",
+          "status": "active",
+          "tags": [
+            "bidi",
+            "homoglyph",
+            "prompt-injection",
+            "sanitization",
+            "text-integrity",
+            "unicode",
+            "zero-width"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "reviewing or accepting text that may carry invisible, bidirectional, or smuggled Unicode characters",
+        "writing generated text to a file, commit, pull request, issue, or review comment"
+      ],
+      "entry_points": [
+        "claims/spec.guard.output.text-integrity--1.0.0.md"
+      ],
+      "extends": null,
+      "kind": "capability-procedure",
+      "lineage": [
+        "guard.output.text-integrity"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/guard.output.text-integrity/manifests/0001.json",
+        "sha256": "50a1ab572c9461e31998bad664ab1643e036c5c65676919560a44ffd0be3a43d",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/guard.output.text-integrity/manifests/0001.json",
+          "sha256": "50a1ab572c9461e31998bad664ab1643e036c5c65676919560a44ffd0be3a43d",
+          "supersedes": null
+        }
+      ],
+      "namespace": "guard.output.text-integrity",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Generated text integrity"
+    },
+    {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
+          "authority": "hand-authored",
           "claim_id": "spec.knowledge.finance.evidence-synthesis",
           "claim_ref": "spec.knowledge.finance.evidence-synthesis@1.0.0",
           "confidence": null,

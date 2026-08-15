@@ -53,6 +53,7 @@ database, key service, or authorization plane. See
 | Namespace | What it adds |
 |---|---|
 | `guard.autonomy.tool-intent` | Reconcile non-read actions with operator intent and tool-output trust boundaries. |
+| `guard.output.text-integrity` | Strip invisible, bidirectional, and smuggled Unicode from generated text before it is written. |
 | `engineering.repair.root-cause` | Diagnose causes before patching symptoms. |
 | `engineering.repair.root-cause.python-packages` | Specialize root-cause repair for Python package failures. |
 | `engineering.verification.external-evidence` | Require independent evidence before declaring work complete. |
@@ -116,17 +117,53 @@ aikb lineage NAMESPACE
 aikb status
 aikb check
 aikb refresh [--check]
+aikb sanitize PATH... [--write] [--stdin] [--typography] [--strip-joiners]
 aikb sync
 aikb update [--check] [--all]
 aikb contribute SLUG [--worktree PATH] [--push-remote REMOTE]
 ```
 
 `list`, `index`, `search`, `show`, `lineage`, `status`, and `check` are
-read-only. `refresh` rewrites only the two generated projections. `sync` fails
+read-only. `refresh` rewrites only the two generated projections. `sanitize`
+reports by default and only rewrites files when `--write` is given. `sync` fails
 closed on a dirty checkout and fast-forwards only from the canonical remote.
 `update` does the same but classifies what is arriving first. `contribute`
 fetches the canonical default branch and creates an isolated
 `improvement/<slug>` branch and sibling worktree.
+
+## Hidden characters in generated text
+
+Model output routinely carries characters that survive copy-paste but never
+render. Some are cosmetic; two classes are a genuine attack surface, because a
+reviewer and a compiler can be shown different content:
+
+- **bidirectional controls** reorder a rendered line without changing what a
+  compiler consumes, the Trojan Source class (CVE-2021-42574);
+- **Unicode tag characters** (`U+E0000`–`U+E007F`) map onto ASCII and are
+  invisible in nearly every renderer, so text can carry a hidden payload.
+
+```bash
+aikb sanitize docs/            # report only, non-zero when found
+aikb sanitize docs/ --write    # rewrite in place
+generate | aikb sanitize --stdin > out.md
+```
+
+Defaults are deliberately conservative. Zero-width characters, bidirectional
+controls, and stray tag characters are removed, and exotic spaces fold to ASCII.
+Emoji joiners, variation selectors, and curly typography are **preserved**,
+because removing them corrupts valid text — `U+200D` composes emoji and carries
+meaning in Persian and Indic scripts. A valid emoji tag sequence such as a
+subdivision flag is preserved while a bare tag character is not. Opt into more
+aggressive folding with `--strip-joiners` or `--typography`.
+
+To refuse commits that contain hidden characters, enable the opt-in hook:
+
+```bash
+git config aikb.sanitizeHook true
+```
+
+It is inert unless that setting is `true`, and `git commit --no-verify`
+bypasses it once.
 
 ## Staying current
 
@@ -265,7 +302,7 @@ INDEX.md                    generated human and agent routing projection
 install/                    machine-wide Windows and POSIX installers
 surfaces/                   canonical agent instruction and skill surfaces
 schema/                     JSON Schemas for canonical records
-scripts/                    scaffolding and history policy gates
+scripts/                    scaffolding, sanitizer, and history policy gates
 tests/                      deterministic and adversarial checks
 .github/                    CI, issue forms, and collaboration metadata
 ```
