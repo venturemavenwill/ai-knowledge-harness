@@ -182,6 +182,72 @@
       "claims": [
         {
           "authority": "hand-authored",
+          "claim_id": "spec.engineering.verification.external-evidence.rendered-artifacts",
+          "claim_ref": "spec.engineering.verification.external-evidence.rendered-artifacts@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "When a deliverable's correctness is only observable once rendered, object-model success is structural evidence only; the work must be driven through an addressable, re-runnable transform over explicitly selected source items and accepted on inspected renders plus machine-checkable layout, coverage, and residue invariants.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/claims/spec.engineering.verification.external-evidence.rendered-artifacts--1.0.0.md",
+          "sha256": "377ef8d73f56e59c1377d6666e36f1f0550027dbb9af0d434d4e6684c6f4ba2f",
+          "status": "active",
+          "tags": [
+            "acceptance-gate",
+            "asset-reuse",
+            "deck",
+            "document-automation",
+            "layout-invariants",
+            "office-automation",
+            "presentation",
+            "rendered-artifacts",
+            "slides",
+            "template-reuse",
+            "visual-verification"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "an automation reports success on a document artifact that has not been rendered and looked at",
+        "an instruction asks to reuse, adapt, harvest, or modify existing assets from a corpus instead of generating new ones",
+        "choosing between importing existing source items and redrawing equivalent content",
+        "producing, rebuilding, or editing a slide deck, document, spreadsheet, diagram, report, or other deliverable whose correctness is only visible once rendered"
+      ],
+      "entry_points": [
+        "claims/spec.engineering.verification.external-evidence.rendered-artifacts--1.0.0.md"
+      ],
+      "extends": "engineering.verification.external-evidence",
+      "kind": "capability-procedure",
+      "lineage": [
+        "engineering.verification.external-evidence",
+        "engineering.verification.external-evidence.rendered-artifacts"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0001.json",
+        "sha256": "57d50de1ed189019d133647e714e3867edada0ef1825a9157830d27b012e5e7a",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0001.json",
+          "sha256": "57d50de1ed189019d133647e714e3867edada0ef1825a9157830d27b012e5e7a",
+          "supersedes": null
+        }
+      ],
+      "namespace": "engineering.verification.external-evidence.rendered-artifacts",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Rendered artifact production and acceptance specialization"
+    },
+    {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
+          "authority": "hand-authored",
           "claim_id": "spec.guard.autonomy.tool-intent",
           "claim_ref": "spec.guard.autonomy.tool-intent@1.0.0",
           "confidence": null,
