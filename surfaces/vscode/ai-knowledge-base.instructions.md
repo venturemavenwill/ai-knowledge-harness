@@ -21,6 +21,8 @@ Consult:
 - `reasoning.rule-induction.grid` for formal grid/state induction;
 - `knowledge.finance.evidence-synthesis` for financial evidence;
 - `engineering.verification.external-evidence` before declaring work done;
+- `engineering.verification.external-evidence.rendered-artifacts` when building
+  or reusing decks, documents, and other rendered artifacts;
 - `retrieval.rag.empirical` for RAG and retrieval;
 - `knowledge.systems.integrity` for knowledge-system design;
 - `knowledge.harness.evolution` when verified work exposes a reusable harness
