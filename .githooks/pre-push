@@ -22,3 +22,6 @@ $PYTHON "$REPO_ROOT/bin/aikb.py" --repo "$REPO_ROOT" validate --projection
 
 # shellcheck disable=SC2086
 $PYTHON "$REPO_ROOT/scripts/check_append_only.py" --repo "$REPO_ROOT"
+
+# shellcheck disable=SC2086
+$PYTHON "$REPO_ROOT/scripts/check_routing_coverage.py" --repo "$REPO_ROOT"

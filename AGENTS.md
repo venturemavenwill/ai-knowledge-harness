@@ -28,6 +28,11 @@ those actions only when they match the current operator's explicit intent.
   `supersedes`.
 - Preserve authority, evidence class, scope, provenance, and uncertainty.
 - Never turn model agreement into primary evidence.
+- A namespace that declares `consult_when` must be reachable from the routing
+  surfaces; add it to `surfaces/skill/SKILL.md`, the consult list in
+  `surfaces/vscode/ai-knowledge-base.instructions.md`, and the capability table
+  in `README.md`. Routing is hand-maintained, so it drifts silently unless
+  `scripts/check_routing_coverage.py` is run.
 - Never add credentials, customer data, private project source, personal data,
   or material that cannot be redistributed under this repository's license.
 - Do not edit `catalog.json` or `INDEX.md` manually; rebuild them with
@@ -53,6 +58,7 @@ request, run the complete local gate:
 ```text
 python bin/aikb.py --repo . validate --projection
 python bin/aikb.py --repo . refresh --check
+python scripts/check_routing_coverage.py --repo .
 python -m unittest discover -s tests -v
 git diff --check
 ```

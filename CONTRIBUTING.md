@@ -141,9 +141,17 @@ Run the complete local gate in the contribution worktree:
 python bin/aikb.py --repo . validate
 python bin/aikb.py --repo . refresh
 python bin/aikb.py --repo . validate --projection
+python scripts/check_routing_coverage.py --repo .
 python -m unittest discover -s tests -v
 git diff --check
 ```
+
+A new namespace is not finished when it validates. Every namespace that
+declares `consult_when` must also be reachable from the routing surfaces, so
+add it to the `## Routing` table in `surfaces/skill/SKILL.md`, the consult list
+in `surfaces/vscode/ai-knowledge-base.instructions.md`, and the capability table
+in `README.md`. `check_routing_coverage.py` enforces this in CI and on push;
+without it a namespace can merge that no agent will ever be told to consult.
 
 Commit only files that belong to the improvement, then use the push command
 printed by `aikb contribute` and open a pull request against the canonical

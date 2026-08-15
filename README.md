@@ -276,18 +276,23 @@ python .\scripts\new_namespace.py `
 ```
 
 Copy [templates/claim.md](templates/claim.md) into the new namespace's `claims/`
-directory, replace every placeholder, then run:
+directory, replace every placeholder, then add the namespace to the routing
+surfaces — the `## Routing` table in `surfaces/skill/SKILL.md`, the consult list
+in `surfaces/vscode/ai-knowledge-base.instructions.md`, and the capability table
+above. Routing is hand-maintained and drifts silently, so this is enforced:
 
 ```powershell
 python .\bin\aikb.py validate
 python .\bin\aikb.py refresh
 python .\bin\aikb.py validate --projection
+python .\scripts\check_routing_coverage.py
 python -m unittest discover -s tests -v
 ```
 
 CI rejects modified or deleted canonical records, broken specialization lineage,
 path escapes, hand-authored confidence numbers, codec-produced fields in
-pre-encoding claims, and stale generated projections.
+pre-encoding claims, stale generated projections, and any routable namespace
+that no routing surface names.
 
 To revise knowledge, add a new claim version with `parent_refs`; never edit the
 old claim. To revise namespace routing or metadata, add the next manifest
@@ -303,7 +308,7 @@ INDEX.md                    generated human and agent routing projection
 install/                    machine-wide Windows and POSIX installers
 surfaces/                   canonical agent instruction and skill surfaces
 schema/                     JSON Schemas for canonical records
-scripts/                    scaffolding, sanitizer, and history policy gates
+scripts/                    scaffolding, sanitizer, and repository policy gates
 tests/                      deterministic and adversarial checks
 .github/                    CI, issue forms, and collaboration metadata
 ```
