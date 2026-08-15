@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import subprocess
 import sys
 import tempfile
@@ -115,7 +116,7 @@ class SanitizeTextTests(unittest.TestCase):
         self.assertEqual(clean(f"a{ZWSP}\r\nb\r\n"), "a\r\nb\r\n")
 
 
-def run_cli(script: Path, *args: str, stdin: str | None = None):
+def run_cli(script: Path, *args: str, stdin: str | None = None, env: dict | None = None):
     return subprocess.run(
         [sys.executable, str(script), *args],
         input=stdin,
@@ -124,7 +125,15 @@ def run_cli(script: Path, *args: str, stdin: str | None = None):
         text=True,
         encoding="utf-8",
         timeout=30,
+        env=env,
     )
+
+
+def _locale_env(encoding: str) -> dict:
+    """Environment that forces a non-UTF-8 console, as a Windows runner has."""
+    env = dict(os.environ)
+    env["PYTHONIOENCODING"] = encoding
+    return env
 
 
 class SanitizeCliTests(unittest.TestCase):
@@ -174,6 +183,50 @@ class SanitizeCliTests(unittest.TestCase):
             (Path(raw) / "dirty.md").write_text(f"a{ZWSP}b\n", encoding="utf-8")
             result = run_cli(SANITIZER, raw, "--ext", ".py")
             self.assertEqual(result.returncode, 0, result.stderr)
+
+
+class StreamEncodingTests(unittest.TestCase):
+    """A non-UTF-8 console must not let hidden characters survive.
+
+    Regression guard: when the pipeline inherited the ambient locale, the UTF-8
+    bytes for U+200B decoded to unrelated code points under cp1252, matched
+    nothing, and re-encoded identically, so the sanitizer reported success while
+    removing nothing.
+    """
+
+    def test_stdin_is_sanitized_under_cp1252(self) -> None:
+        result = run_cli(
+            SANITIZER, "--stdin", stdin=f"a{ZWSP}b", env=_locale_env("cp1252")
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "ab")
+
+    def test_stdin_is_sanitized_under_latin_1(self) -> None:
+        result = run_cli(
+            SANITIZER, "--stdin", stdin=f"x{RLO}y", env=_locale_env("latin-1")
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "xy")
+
+    def test_subcommand_stdin_is_sanitized_under_cp1252(self) -> None:
+        result = run_cli(
+            AIKB,
+            "--repo",
+            str(REPO),
+            "sanitize",
+            "--stdin",
+            stdin=f"p{ZWSP}q",
+            env=_locale_env("cp1252"),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "pq")
+
+    def test_newlines_are_not_translated(self) -> None:
+        result = run_cli(
+            SANITIZER, "--stdin", stdin=f"a{ZWSP}\nb\n", env=_locale_env("cp1252")
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "a\nb\n")
 
 
 class AikbSanitizeCommandTests(unittest.TestCase):

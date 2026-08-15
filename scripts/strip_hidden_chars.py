@@ -209,8 +209,26 @@ def _options(args: argparse.Namespace) -> dict[str, bool]:
     }
 
 
+def _reconfigure(stream: object, **settings: object) -> None:
+    """Pin a standard stream to an explicit encoding where the platform allows it.
+
+    Without this the pipeline inherits the ambient locale, so on a Windows
+    console the UTF-8 bytes for a hidden character decode to unrelated
+    code points, pass through untouched, and re-encode identically. The
+    sanitizer would then report success while removing nothing.
+    """
+    reconfigure = getattr(stream, "reconfigure", None)
+    if reconfigure is not None:
+        reconfigure(**settings)
+
+
 def _run_stdin(args: argparse.Namespace) -> int:
-    text = sys.stdin.read()
+    _reconfigure(sys.stdin, encoding="utf-8", errors="strict")
+    _reconfigure(sys.stdout, encoding="utf-8", newline="")
+    try:
+        text = sys.stdin.read()
+    except UnicodeDecodeError as exc:
+        raise SanitizeError("stdin is not valid UTF-8") from exc
     cleaned, counts = sanitize_text(text, **_options(args))
     sys.stdout.write(cleaned)
     if not args.quiet and _total(counts):
@@ -291,6 +309,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("--stdin does not take paths")
     if not args.stdin and not args.paths:
         parser.error("provide at least one path, or --stdin")
+
+    # Diagnostics must never crash on a path the console encoding cannot render.
+    _reconfigure(sys.stderr, errors="replace")
 
     extensions: frozenset[str] = frozenset()
     if not args.all_extensions:
