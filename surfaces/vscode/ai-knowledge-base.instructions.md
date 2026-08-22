@@ -17,6 +17,8 @@ Consult:
 - `guard.output.text-integrity` before writing generated text to a file,
   commit, or published comment;
 - `engineering.repair.root-cause` for software defects;
+- `engineering.repair.root-cause.browser-agent-integrations` for opaque agent,
+  connector, plugin, or tool failures mediated by a browser UI;
 - `engineering.repair.root-cause.python-packages` for Python-specific defects;
 - `reasoning.rule-induction.grid` for formal grid/state induction;
 - `knowledge.finance.evidence-synthesis` for financial evidence;

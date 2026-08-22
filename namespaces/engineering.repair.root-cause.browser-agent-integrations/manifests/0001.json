@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "engineering.repair.root-cause.browser-agent-integrations",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Browser-mediated agent integration debugging specialization",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": "engineering.repair.root-cause",
+  "consult_when": [
+    "debugging an agent, plugin, connector, or tool integration whose primary symptom appears in a browser UI",
+    "a browser-mediated agent, plugin, connector, or tool workflow reports a generic failure, requires repeated manual interaction, or hides whether a backend request was sent"
+  ],
+  "routing_summary": "Debugging browser-mediated agent and tool integrations",
+  "capability_summary": "Localize opaque browser-agent failures through product diagnostics, browser instrumentation, and controlled wire-level experiments.",
+  "entry_points": [
+    "claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.0.0.md",
+    "claims/finding.browser-agent.osintai--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

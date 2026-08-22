@@ -46,6 +46,7 @@ aikb sanitize path/to/file --write
 | Before any non-read tool action | `guard.autonomy.tool-intent` |
 | Writing generated text to a file, commit, or published comment | `guard.output.text-integrity` |
 | Debugging or repairing software | `engineering.repair.root-cause` |
+| Debugging browser-mediated agent and tool integrations | `engineering.repair.root-cause.browser-agent-integrations` |
 | Debugging Python packaging/import/runtime defects | `engineering.repair.root-cause.python-packages` |
 | Declaring work done/fixed or writing a gate | `engineering.verification.external-evidence` |
 | Producing or reusing decks, documents, or other rendered artifacts | `engineering.verification.external-evidence.rendered-artifacts` |
