@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "knowledge.harness.evolution.capture-triggers",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Reusable-capability capture triggers",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": "knowledge.harness.evolution",
+  "consult_when": [
+    "primary work has just passed its authoritative check, been corrected by the operator, or repeated a workaround, and no decision has been made about retaining what was learned",
+    "deciding whether an agent should propose a durable harness change rather than waiting for the operator to notice the gap"
+  ],
+  "routing_summary": "Deciding when completed work should become durable knowledge",
+  "capability_summary": "Fire bounded capture checkpoints at verification, operator correction, and repeated friction instead of relying on an agent noticing a gap unprompted.",
+  "entry_points": [
+    "claims/method.harness.capture-triggers--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

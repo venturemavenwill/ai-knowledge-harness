@@ -29,6 +29,14 @@ permits harness modification, use `aikb contribute <slug>` and follow
 harness. Never transfer secrets, private project source, customer data, or
 licensed material.
 
+Ask whether anything durable was learned at four checkpoints, rather than only
+when a gap happens to be noticed: an authoritative check just started passing,
+the operator corrected the work, the same workaround repeated, or an approach
+was abandoned for a characterized reason. Operator correction is the strongest
+signal and the most often discarded. Consult
+`knowledge.harness.evolution.capture-triggers` for the bounds; a checkpoint that
+yields nothing is the expected outcome.
+
 Knowledge updates apply automatically. When `aikb` prints `UPDATE AVAILABLE` or
 `ACTION REQUIRED` about executable code or installed surfaces, always relay
 that notice prominently to the operator, even when the requested command

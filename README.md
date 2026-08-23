@@ -66,6 +66,7 @@ database, key service, or authorization plane. See
 | `retrieval.rag.empirical` | Apply retained findings from empirical RAG and retrieval work. |
 | `knowledge.finance.evidence-synthesis` | Preserve provenance while synthesizing financial evidence. |
 | `knowledge.harness.evolution` | Turn verified reusable gaps into safe harness improvements. |
+| `knowledge.harness.evolution.capture-triggers` | Fire bounded capture checkpoints at verification, operator correction, and repeated friction instead of relying on an agent noticing a gap unprompted. |
 | `knowledge.harness.evolution.public-repositories` | Systematically inspect public repository artifacts before choosing reference, adaptation, or dependency integration. |
 | `knowledge.systems.integrity` | Design replayable knowledge systems with explicit conflicts and trust. |
 
@@ -299,7 +300,28 @@ routable namespace that omits either, so a namespace cannot merge without a
 route.
 
 Copy [templates/claim.md](templates/claim.md) into the new namespace's `claims/`
-directory, replace every placeholder, then run:
+directory and replace every placeholder, or scaffold the claim directly:
+
+```powershell
+python .\scripts\new_claim.py `
+  spec.engineering.repair.root-cause.go-packages `
+  --namespace engineering.repair.root-cause.go-packages `
+  --title "Go package root-cause repair" `
+  --expression "Go build failures resolve faster when the module graph is read before the source." `
+  --holds-when "a Go build, vet, or test failure names a package that compiles in isolation" `
+  --tag go `
+  --evidence "operator" "repair session on 2026-03-04" operator-authored
+```
+
+`new_claim.py` requires at least one `--evidence SOURCE LOCATOR CLASS`, because a
+claim with no retained evidence cannot be reviewed. It also keeps the manifest
+append-only for you: when the namespace manifest is already committed it writes a
+**new generation** that supersedes it rather than editing the committed record,
+and it falls back to that safe path whenever Git cannot prove the manifest is
+uncommitted. The scaffolded body deliberately keeps unresolved placeholders, so
+`validate` fails until the knowledge is actually written.
+
+Then run:
 
 ```powershell
 python .\bin\aikb.py validate
