@@ -60,7 +60,10 @@ source, or licensed material.
 
 ## Staying current
 
-Knowledge-only updates fast-forward automatically. When `aikb` prints an
-`UPDATE` line about executable code or installed agent surfaces, tell the
-operator what is pending and let them decide. Do not run `aikb update --all`
-on your own initiative; it changes code that will run on this machine.
+Knowledge-only updates fast-forward automatically. When `aikb` prints
+`UPDATE AVAILABLE` or `ACTION REQUIRED` about executable code or installed
+agent surfaces, always relay that notice prominently to the operator, even when
+the requested command succeeded. State that `aikb update` reviews the pending
+changes and `aikb update --all` accepts and installs them. Do not run
+`aikb update --all` without explicit operator consent; it changes code that
+will run on this machine.

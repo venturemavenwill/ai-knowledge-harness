@@ -142,8 +142,12 @@ class AutoUpdateTests(unittest.TestCase):
             result = run_cli("list", repo=repo, env={"AIKB_AUTO_UPDATE": "knowledge"})
 
             self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("UPDATE AVAILABLE", result.stderr)
             self.assertIn("change executable code or installed surfaces", result.stderr)
             self.assertIn(CODE_FILE, result.stderr)
+            self.assertIn("ACTION REQUIRED", result.stderr)
+            self.assertIn("aikb update' to review", result.stderr)
+            self.assertIn("aikb update --all", result.stderr)
             self.assertEqual(head_of(repo), before)
             self.assertNotEqual(head_of(repo), published)
             self.assertFalse((repo / CODE_FILE).exists())

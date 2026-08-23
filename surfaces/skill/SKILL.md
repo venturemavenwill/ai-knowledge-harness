@@ -91,13 +91,16 @@ Read commands keep knowledge current on their own. A knowledge-only update
 once a day when the checkout is clean and on the default branch.
 
 An update that changes executable code or installed agent surfaces is reported
-on stderr as `UPDATE ...` and deliberately **not** applied. When that appears:
+on stderr as `UPDATE AVAILABLE` followed by `ACTION REQUIRED` and deliberately
+**not** applied. These notices are part of the command result, not incidental
+diagnostics. When either appears:
 
-1. tell the operator an update is pending and what it touches;
-2. do not run `aikb update --all` on your own initiative — it changes code that
-   will run on this machine;
-3. after the operator consents and applies it, remind them to re-run the
-   installer bootstrap so installed surfaces match.
+1. always tell the operator prominently that an update is available, even when
+   the requested command otherwise succeeded;
+2. state that `aikb update` reviews the pending changes and
+   `aikb update --all` accepts them and refreshes the installed surfaces;
+3. do not run `aikb update --all` without explicit operator consent — it changes
+   code that will run on this machine.
 
 Set `AIKB_AUTO_UPDATE=off` to disable the check entirely.
 

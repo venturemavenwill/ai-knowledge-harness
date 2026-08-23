@@ -29,7 +29,10 @@ permits harness modification, use `aikb contribute <slug>` and follow
 harness. Never transfer secrets, private project source, customer data, or
 licensed material.
 
-Knowledge updates apply automatically. When `aikb` prints `UPDATE ...` about
-executable code or installed surfaces, report it to the operator and let them
-decide; do not run `aikb update --all` on your own initiative.
+Knowledge updates apply automatically. When `aikb` prints `UPDATE AVAILABLE` or
+`ACTION REQUIRED` about executable code or installed surfaces, always relay
+that notice prominently to the operator, even when the requested command
+succeeded. State that `aikb update` reviews the pending changes and
+`aikb update --all` accepts and installs them. Do not run `aikb update --all`
+without explicit operator consent.
 <!-- END ai-knowledge-harness -->
