@@ -618,6 +618,68 @@
       "title": "Collaborative harness evolution"
     },
     {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
+          "authority": "hand-authored",
+          "claim_id": "method.public-repository.deep-analysis",
+          "claim_ref": "method.public-repository.deep-analysis@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "When a public repository is proposed as a learning or integration source, agents should inventory and analyze every artifact class, verify claims against source and tests, and maximize independently retained learning before making a separate license-based decision about copying, vendoring, or dependency adoption.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/knowledge.harness.evolution.public-repositories/claims/method.public-repository.deep-analysis--1.0.0.md",
+          "sha256": "283f701910cd834cf4d60f18398cbc00c55210a8cabd34e6bbb0b1acbfca1721",
+          "status": "active",
+          "tags": [
+            "artifact-inventory",
+            "deep-analysis",
+            "dependency-assessment",
+            "learning-extraction",
+            "licensing",
+            "open-source",
+            "public-repositories",
+            "repository-assessment"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "a public repository is proposed as a source of reusable knowledge, architecture, procedures, tests, or dependencies",
+        "assessing whether and how an external open-source project should inform or enter the shared harness"
+      ],
+      "entry_points": [
+        "claims/method.public-repository.deep-analysis--1.0.0.md"
+      ],
+      "extends": "knowledge.harness.evolution",
+      "kind": "capability-procedure",
+      "lineage": [
+        "knowledge.systems.integrity",
+        "knowledge.harness.evolution",
+        "knowledge.harness.evolution.public-repositories"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/knowledge.harness.evolution.public-repositories/manifests/0001.json",
+        "sha256": "11b936c2c15318459517214f283ddaca53b6bd13482a8f9308d110effc3b3453",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/knowledge.harness.evolution.public-repositories/manifests/0001.json",
+          "sha256": "11b936c2c15318459517214f283ddaca53b6bd13482a8f9308d110effc3b3453",
+          "supersedes": null
+        }
+      ],
+      "namespace": "knowledge.harness.evolution.public-repositories",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Public repository deep-learning specialization"
+    },
+    {
       "authority": "reference-only",
       "claims": [
         {

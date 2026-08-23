@@ -54,6 +54,7 @@ aikb sanitize path/to/file --write
 | Building/debugging RAG or routed retrieval | `retrieval.rag.empirical` |
 | Answering from financial tables, charts, or filings | `knowledge.finance.evidence-synthesis` |
 | Verified work exposes a reusable harness gap | `knowledge.harness.evolution` |
+| Assessing public repositories for maximum reusable learning | `knowledge.harness.evolution.public-repositories` |
 | Designing knowledge storage, conflict, replay, or GC | `knowledge.systems.integrity` |
 
 <!-- END aikb-routing -->

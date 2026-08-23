@@ -29,6 +29,8 @@ Consult:
 - `knowledge.systems.integrity` for knowledge-system design;
 - `knowledge.harness.evolution` when verified work exposes a reusable harness
   gap or specialization opportunity.
+- `knowledge.harness.evolution.public-repositories` when a public repository is
+  proposed as a learning, adaptation, or dependency source.
 
 Use `aikb list`, `aikb search`, `aikb show`, `aikb lineage`, and `aikb check`.
 Carry authority, scope, provenance, and evidence class into conclusions. Do not

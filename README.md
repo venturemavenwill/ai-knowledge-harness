@@ -66,6 +66,7 @@ database, key service, or authorization plane. See
 | `retrieval.rag.empirical` | Apply retained findings from empirical RAG and retrieval work. |
 | `knowledge.finance.evidence-synthesis` | Preserve provenance while synthesizing financial evidence. |
 | `knowledge.harness.evolution` | Turn verified reusable gaps into safe harness improvements. |
+| `knowledge.harness.evolution.public-repositories` | Systematically inspect public repository artifacts before choosing reference, adaptation, or dependency integration. |
 | `knowledge.systems.integrity` | Design replayable knowledge systems with explicit conflicts and trust. |
 
 <!-- END aikb-routing -->
