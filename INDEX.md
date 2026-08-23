@@ -32,7 +32,7 @@ aikb check
 | [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0002.json) | capability-procedure | - | 1 |
 | [`knowledge.harness.evolution`](namespaces/knowledge.harness.evolution/manifests/0002.json) | working-discipline | knowledge.systems.integrity | 1 |
 | [`knowledge.harness.evolution.capture-triggers`](namespaces/knowledge.harness.evolution.capture-triggers/manifests/0001.json) | capability-procedure | knowledge.harness.evolution | 1 |
-| [`knowledge.harness.evolution.public-repositories`](namespaces/knowledge.harness.evolution.public-repositories/manifests/0001.json) | capability-procedure | knowledge.harness.evolution | 1 |
+| [`knowledge.harness.evolution.public-repositories`](namespaces/knowledge.harness.evolution.public-repositories/manifests/0002.json) | capability-procedure | knowledge.harness.evolution | 2 |
 | [`knowledge.systems.integrity`](namespaces/knowledge.systems.integrity/manifests/0002.json) | design-substrate | - | 1 |
 | [`reasoning.rule-induction.grid`](namespaces/reasoning.rule-induction.grid/manifests/0002.json) | capability-procedure | - | 1 |
 | [`retrieval.rag.empirical`](namespaces/retrieval.rag.empirical/manifests/0003.json) | empirical-findings | - | 7 |
@@ -196,6 +196,7 @@ Public repository deep-learning specialization
   - a public repository is proposed as a source of reusable knowledge, architecture, procedures, tests, or dependencies
   - assessing whether and how an external open-source project should inform or enter the shared harness
 - **Claims:**
+  - [`finding.public-repository.substrate-analysis@1.0.0`](namespaces/knowledge.harness.evolution.public-repositories/claims/finding.public-repository.substrate-analysis--1.0.0.md) [hand-authored; active] — A repository that is a thin configuration layer over a dependency carries almost none of its own behavior, so an assessment that stops at its own tree reaches a confident conclusion about the wrong artifact.
   - [`method.public-repository.deep-analysis@1.0.0`](namespaces/knowledge.harness.evolution.public-repositories/claims/method.public-repository.deep-analysis--1.0.0.md) [hand-authored; active] — When a public repository is proposed as a learning or integration source, agents should inventory and analyze every artifact class, verify claims against source and tests, and maximize independently retained learning before making a separate license-based decision about copying, vendoring, or dependency adoption.
 
 ## `knowledge.systems.integrity`
