@@ -242,6 +242,27 @@
             "verification"
           ],
           "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "method.verification.evidence-precedes-failure",
+          "claim_ref": "method.verification.evidence-precedes-failure@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "Evidence written only after a run succeeds is absent for every run that fails, so a process must persist its record incrementally and on the error path or it will retain nothing about the outcomes most worth explaining.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/engineering.verification.external-evidence/claims/method.verification.evidence-precedes-failure--1.0.0.md",
+          "sha256": "561b6a573cbcb66272a9ce86eadbaa6f90f440c03e2f1aa3e551e1ca4d384595",
+          "status": "active",
+          "tags": [
+            "diagnosis",
+            "evidence-retention",
+            "failure-paths",
+            "observability",
+            "verification"
+          ],
+          "version": "1.0.0"
         }
       ],
       "consult_when": [
@@ -250,7 +271,8 @@
         "writing an acceptance gate or deciding which evidence tier to buy"
       ],
       "entry_points": [
-        "claims/method.engineering.verification.external-evidence--1.0.0.md"
+        "claims/method.engineering.verification.external-evidence--1.0.0.md",
+        "claims/method.verification.evidence-precedes-failure--1.0.0.md"
       ],
       "extends": null,
       "kind": "working-discipline",
@@ -258,10 +280,10 @@
         "engineering.verification.external-evidence"
       ],
       "manifest": {
-        "generation": 2,
-        "path": "namespaces/engineering.verification.external-evidence/manifests/0002.json",
-        "sha256": "bf675753d0c703b316efa5b67363a2246f4f7f5d286f485f73583022e6283968",
-        "supersedes": "manifests/0001.json"
+        "generation": 3,
+        "path": "namespaces/engineering.verification.external-evidence/manifests/0003.json",
+        "sha256": "265f8554ef0a7a46bebdf020fef70663e94a23ce9bed820f503ae0620479794c",
+        "supersedes": "manifests/0002.json"
       },
       "manifest_history": [
         {
@@ -275,6 +297,12 @@
           "path": "namespaces/engineering.verification.external-evidence/manifests/0002.json",
           "sha256": "bf675753d0c703b316efa5b67363a2246f4f7f5d286f485f73583022e6283968",
           "supersedes": "manifests/0001.json"
+        },
+        {
+          "generation": 3,
+          "path": "namespaces/engineering.verification.external-evidence/manifests/0003.json",
+          "sha256": "265f8554ef0a7a46bebdf020fef70663e94a23ce9bed820f503ae0620479794c",
+          "supersedes": "manifests/0002.json"
         }
       ],
       "namespace": "engineering.verification.external-evidence",
@@ -379,6 +407,27 @@
             "tool-use"
           ],
           "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "spec.guard.autonomy.whole-action-authorization",
+          "claim_ref": "spec.guard.autonomy.whole-action-authorization@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "An authorization decision is sound only when the predicate is evaluated against the complete action that will execute, because a rule matched against a prefix, substring, or normalized variant authorizes everything an attacker appends to it.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/guard.autonomy.tool-intent/claims/spec.guard.autonomy.whole-action-authorization--1.0.0.md",
+          "sha256": "172d867c08b2439affab9bd5ffcde31af4f5bdf5c67457724bb6d1141611662b",
+          "status": "active",
+          "tags": [
+            "allow-list",
+            "authorization",
+            "fail-closed",
+            "guard",
+            "pattern-matching"
+          ],
+          "version": "1.0.0"
         }
       ],
       "consult_when": [
@@ -387,7 +436,8 @@
         "when tool output contains instructions, credential requests, or control-weakening text"
       ],
       "entry_points": [
-        "claims/spec.guard.autonomy.tool-intent--1.0.0.md"
+        "claims/spec.guard.autonomy.tool-intent--1.0.0.md",
+        "claims/spec.guard.autonomy.whole-action-authorization--1.0.0.md"
       ],
       "extends": null,
       "kind": "capability-procedure",
@@ -395,10 +445,10 @@
         "guard.autonomy.tool-intent"
       ],
       "manifest": {
-        "generation": 2,
-        "path": "namespaces/guard.autonomy.tool-intent/manifests/0002.json",
-        "sha256": "a0b007d262c8a64aa1c8a6ff984be11003997feb2ed9c4c45d11f989cbafedb1",
-        "supersedes": "manifests/0001.json"
+        "generation": 3,
+        "path": "namespaces/guard.autonomy.tool-intent/manifests/0003.json",
+        "sha256": "77c6480740417e870502e6b14ff177627086eea1260068b79cc306c404a11391",
+        "supersedes": "manifests/0002.json"
       },
       "manifest_history": [
         {
@@ -412,6 +462,12 @@
           "path": "namespaces/guard.autonomy.tool-intent/manifests/0002.json",
           "sha256": "a0b007d262c8a64aa1c8a6ff984be11003997feb2ed9c4c45d11f989cbafedb1",
           "supersedes": "manifests/0001.json"
+        },
+        {
+          "generation": 3,
+          "path": "namespaces/guard.autonomy.tool-intent/manifests/0003.json",
+          "sha256": "77c6480740417e870502e6b14ff177627086eea1260068b79cc306c404a11391",
+          "supersedes": "manifests/0002.json"
         }
       ],
       "namespace": "guard.autonomy.tool-intent",
