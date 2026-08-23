@@ -58,6 +58,7 @@ database, key service, or authorization plane. See
 | `guard.autonomy.tool-intent` | Reconcile non-read actions with operator intent and tool-output trust boundaries. |
 | `guard.output.text-integrity` | Strip invisible, bidirectional, and smuggled Unicode from generated text before it is written. |
 | `engineering.repair.root-cause` | Diagnose causes before patching symptoms. |
+| `engineering.repair.root-cause.browser-agent-integrations` | Localize opaque browser-agent failures through product diagnostics, browser instrumentation, and controlled wire-level experiments. |
 | `engineering.repair.root-cause.python-packages` | Specialize root-cause repair for Python package failures. |
 | `engineering.verification.external-evidence` | Require independent evidence before declaring work complete. |
 | `engineering.verification.external-evidence.rendered-artifacts` | Build and accept rendered deliverables on inspected output, not object-model success. |

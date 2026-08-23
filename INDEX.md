@@ -23,6 +23,7 @@ aikb check
 | Namespace | Kind | Extends | Claims |
 |---|---|---|---:|
 | [`engineering.repair.root-cause`](namespaces/engineering.repair.root-cause/manifests/0002.json) | capability-procedure | - | 1 |
+| [`engineering.repair.root-cause.browser-agent-integrations`](namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0001.json) | capability-procedure | engineering.repair.root-cause | 2 |
 | [`engineering.repair.root-cause.python-packages`](namespaces/engineering.repair.root-cause.python-packages/manifests/0002.json) | capability-procedure | engineering.repair.root-cause | 1 |
 | [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0002.json) | working-discipline | - | 1 |
 | [`engineering.verification.external-evidence.rendered-artifacts`](namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0002.json) | capability-procedure | engineering.verification.external-evidence | 1 |
@@ -47,6 +48,21 @@ Root-cause software repair discipline
   - deciding whether a repair has enough evidence to be called fixed
 - **Claims:**
   - [`spec.engineering.repair.root-cause@1.0.0`](namespaces/engineering.repair.root-cause/claims/spec.engineering.repair.root-cause--1.0.0.md) [hand-authored; active] — A software defect is repaired only when it has a deterministic reproduction, a named root cause and causal chain, coverage of coupled call sites, and a regression check that fails again when the fix is reverted.
+
+## `engineering.repair.root-cause.browser-agent-integrations`
+
+Browser-mediated agent integration debugging specialization
+
+- **Kind:** capability-procedure
+- **Authority:** hand-authored-unmeasured
+- **Extends:** engineering.repair.root-cause
+- **Lineage:** engineering.repair.root-cause -> engineering.repair.root-cause.browser-agent-integrations
+- **Consult when:**
+  - a browser-mediated agent, plugin, connector, or tool workflow reports a generic failure, requires repeated manual interaction, or hides whether a backend request was sent
+  - debugging an agent, plugin, connector, or tool integration whose primary symptom appears in a browser UI
+- **Claims:**
+  - [`finding.browser-agent.osintai@1.0.0`](namespaces/engineering.repair.root-cause.browser-agent-integrations/claims/finding.browser-agent.osintai--1.0.0.md) [reference-only; active] — OSINTai v4.0.0 is a useful design reference for typed evidence records, post-crawl deterministic analysis, falsifiable hypotheses, stage isolation, and findings-level secret omission, but one pipeline path loses model-date provenance, raw crawl archives retain source content, it is not a browser, source-code, or autonomous-agent root-cause system, and it should not be imported as a dependency while the assessed release lacks a license grant.
+  - [`spec.engineering.repair.root-cause.browser-agent-integrations@1.0.0`](namespaces/engineering.repair.root-cause.browser-agent-integrations/claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.0.0.md) [hand-authored; active] — Opaque browser-mediated agent integration failures should be localized by enabling product diagnostics first, correlating browser and backend wire evidence, and using an operator-authorized persistent CDP automation loop for repeatable one-variable experiments before changing product configuration.
 
 ## `engineering.repair.root-cause.python-packages`
 

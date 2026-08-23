@@ -68,6 +68,94 @@
       "authority": "hand-authored-unmeasured",
       "claims": [
         {
+          "authority": "reference-only",
+          "claim_id": "finding.browser-agent.osintai",
+          "claim_ref": "finding.browser-agent.osintai@1.0.0",
+          "confidence": null,
+          "confidence_method": "static source review plus isolated test execution; qualitative design assessment",
+          "expression": "OSINTai v4.0.0 is a useful design reference for typed evidence records, post-crawl deterministic analysis, falsifiable hypotheses, stage isolation, and findings-level secret omission, but one pipeline path loses model-date provenance, raw crawl archives retain source content, it is not a browser, source-code, or autonomous-agent root-cause system, and it should not be imported as a dependency while the assessed release lacks a license grant.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/claims/finding.browser-agent.osintai--1.0.0.md",
+          "sha256": "1bba3bf24401f06ddc330cc2e775fd0b2a9b137ba7faadc19efc00a433509f56",
+          "status": "active",
+          "tags": [
+            "design-assessment",
+            "evidence-provenance",
+            "falsifiability",
+            "licensing",
+            "osintai",
+            "root-cause"
+          ],
+          "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "spec.engineering.repair.root-cause.browser-agent-integrations",
+          "claim_ref": "spec.engineering.repair.root-cause.browser-agent-integrations@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "Opaque browser-mediated agent integration failures should be localized by enabling product diagnostics first, correlating browser and backend wire evidence, and using an operator-authorized persistent CDP automation loop for repeatable one-variable experiments before changing product configuration.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.0.0.md",
+          "sha256": "9252cf843c3e5d5f17cb2e6443c875610876fd0097aee6a59ab0ebffbabceb8d",
+          "status": "active",
+          "tags": [
+            "agent-integrations",
+            "browser-automation",
+            "browser-debugging",
+            "cdp",
+            "developer-mode",
+            "evidence-ledger",
+            "hypothesis-testing",
+            "network-diagnostics",
+            "playwright",
+            "root-cause",
+            "secret-non-retention",
+            "wire-telemetry"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "a browser-mediated agent, plugin, connector, or tool workflow reports a generic failure, requires repeated manual interaction, or hides whether a backend request was sent",
+        "debugging an agent, plugin, connector, or tool integration whose primary symptom appears in a browser UI"
+      ],
+      "entry_points": [
+        "claims/finding.browser-agent.osintai--1.0.0.md",
+        "claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.0.0.md"
+      ],
+      "extends": "engineering.repair.root-cause",
+      "kind": "capability-procedure",
+      "lineage": [
+        "engineering.repair.root-cause",
+        "engineering.repair.root-cause.browser-agent-integrations"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0001.json",
+        "sha256": "c9c6786ab5fb4c92befcbca2814c97950efe0fecd7a329ffa356a6c333a12125",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0001.json",
+          "sha256": "c9c6786ab5fb4c92befcbca2814c97950efe0fecd7a329ffa356a6c333a12125",
+          "supersedes": null
+        }
+      ],
+      "namespace": "engineering.repair.root-cause.browser-agent-integrations",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Browser-mediated agent integration debugging specialization"
+    },
+    {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
           "authority": "hand-authored",
           "claim_id": "spec.engineering.repair.root-cause.python-packages",
           "claim_ref": "spec.engineering.repair.root-cause.python-packages@1.0.0",
