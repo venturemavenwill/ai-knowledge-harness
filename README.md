@@ -192,6 +192,12 @@ The check runs on read commands, at most once every 24 hours, and only when the
 checkout is clean, on the default branch, and a fast-forward is possible. It
 fails silently offline and never blocks a command.
 
+When executable code or installed surfaces are pending, every eligible read
+command writes an explicit `UPDATE AVAILABLE` notice and an `ACTION REQUIRED`
+line to stderr. AI agents must relay those notices to the operator even when the
+read command itself succeeds. The update remains unapplied until a person
+accepts it.
+
 Review and apply held updates explicitly:
 
 ```bash
@@ -233,8 +239,10 @@ Once authorized, agents can use stable CLI output and `catalog.json` for routing
 then retrieve only the relevant namespace. The installed surfaces teach this
 same trust boundary in model-specific locations.
 
-Agents should surface a pending code update to the operator rather than
-applying it. `aikb update --all` changes executable code and requires human
+Agents must prominently surface `UPDATE AVAILABLE` and `ACTION REQUIRED`
+notices rather than treating them as incidental stderr. They should name
+`aikb update` as the review path and `aikb update --all` as the explicit
+accept-and-install path. The latter changes executable code and requires human
 consent; running it unattended is a supply-chain decision, not a convenience.
 
 ## Contribute from anywhere

@@ -1354,14 +1354,14 @@ def _auto_update(repo: Path) -> None:
             preview = ", ".join(other[:3])
             more = f" (+{len(other) - 3} more)" if len(other) > 3 else ""
             print(
-                f"UPDATE  {len(paths)} file(s) available from "
+                f"UPDATE AVAILABLE  {len(paths)} file(s) from "
                 f"{remote_name}/{default_branch}; {len(other)} change executable "
                 f"code or installed surfaces: {preview}{more}",
                 file=sys.stderr,
             )
             print(
-                "UPDATE  review with 'aikb update', then apply with "
-                "'aikb update --all'",
+                "ACTION REQUIRED  Run 'aikb update' to review the pending "
+                "changes. To accept and install them, run 'aikb update --all'.",
                 file=sys.stderr,
             )
             return

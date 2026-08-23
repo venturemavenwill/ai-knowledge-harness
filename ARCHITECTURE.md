@@ -175,6 +175,9 @@ Read commands opportunistically fast-forward class 1 and refuse to apply
 class 2. Class 2 is reported and waits for `aikb update --all`, which is an
 explicit human act. This keeps every installation current on capabilities
 without turning a merged pull request into unattended remote code execution.
+The report uses `UPDATE AVAILABLE` and `ACTION REQUIRED` labels with both the
+review and accept commands so interactive agents cannot reasonably mistake it
+for ignorable diagnostic output.
 
 The automatic path is deliberately narrow. It runs only when the checkout is
 clean, on the default branch, a strict ancestor of the canonical branch, and at
