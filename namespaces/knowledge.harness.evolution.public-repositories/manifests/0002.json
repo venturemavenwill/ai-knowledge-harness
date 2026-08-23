@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "knowledge.harness.evolution.public-repositories",
+  "generation": 2,
+  "supersedes": "manifests/0001.json",
+  "title": "Public repository deep-learning specialization",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": "knowledge.harness.evolution",
+  "consult_when": [
+    "a public repository is proposed as a source of reusable knowledge, architecture, procedures, tests, or dependencies",
+    "assessing whether and how an external open-source project should inform or enter the shared harness"
+  ],
+  "routing_summary": "Assessing public repositories for maximum reusable learning",
+  "capability_summary": "Systematically inspect public repository artifacts before choosing reference, adaptation, or dependency integration.",
+  "entry_points": [
+    "claims/finding.public-repository.substrate-analysis--1.0.0.md",
+    "claims/method.public-repository.deep-analysis--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

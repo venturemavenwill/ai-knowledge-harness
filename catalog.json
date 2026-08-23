@@ -682,6 +682,27 @@
       "claims": [
         {
           "authority": "hand-authored",
+          "claim_id": "finding.public-repository.substrate-analysis",
+          "claim_ref": "finding.public-repository.substrate-analysis@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "A repository that is a thin configuration layer over a dependency carries almost none of its own behavior, so an assessment that stops at its own tree reaches a confident conclusion about the wrong artifact.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/knowledge.harness.evolution.public-repositories/claims/finding.public-repository.substrate-analysis--1.0.0.md",
+          "sha256": "06c32aa75140d9a114f9ace44678c156242b04b6de0e57ab0aea12135f62e1fa",
+          "status": "active",
+          "tags": [
+            "deep-analysis",
+            "dependencies",
+            "public-repositories",
+            "scope-boundary",
+            "substrate-analysis"
+          ],
+          "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
           "claim_id": "method.public-repository.deep-analysis",
           "claim_ref": "method.public-repository.deep-analysis@1.0.0",
           "confidence": null,
@@ -710,6 +731,7 @@
         "assessing whether and how an external open-source project should inform or enter the shared harness"
       ],
       "entry_points": [
+        "claims/finding.public-repository.substrate-analysis--1.0.0.md",
         "claims/method.public-repository.deep-analysis--1.0.0.md"
       ],
       "extends": "knowledge.harness.evolution",
@@ -720,10 +742,10 @@
         "knowledge.harness.evolution.public-repositories"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/knowledge.harness.evolution.public-repositories/manifests/0001.json",
-        "sha256": "11b936c2c15318459517214f283ddaca53b6bd13482a8f9308d110effc3b3453",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/knowledge.harness.evolution.public-repositories/manifests/0002.json",
+        "sha256": "ae1d92f6ac714b13f784496d3435f4b9b103cd83c1dfca2e71101197688b5585",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -731,6 +753,12 @@
           "path": "namespaces/knowledge.harness.evolution.public-repositories/manifests/0001.json",
           "sha256": "11b936c2c15318459517214f283ddaca53b6bd13482a8f9308d110effc3b3453",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/knowledge.harness.evolution.public-repositories/manifests/0002.json",
+          "sha256": "ae1d92f6ac714b13f784496d3435f4b9b103cd83c1dfca2e71101197688b5585",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "knowledge.harness.evolution.public-repositories",
