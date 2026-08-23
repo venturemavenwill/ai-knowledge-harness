@@ -54,6 +54,7 @@ aikb sanitize path/to/file --write
 | Building/debugging RAG or routed retrieval | `retrieval.rag.empirical` |
 | Answering from financial tables, charts, or filings | `knowledge.finance.evidence-synthesis` |
 | Verified work exposes a reusable harness gap | `knowledge.harness.evolution` |
+| Deciding when completed work should become durable knowledge | `knowledge.harness.evolution.capture-triggers` |
 | Assessing public repositories for maximum reusable learning | `knowledge.harness.evolution.public-repositories` |
 | Designing knowledge storage, conflict, replay, or GC | `knowledge.systems.integrity` |
 
@@ -107,6 +108,25 @@ Set `AIKB_AUTO_UPDATE=off` to disable the check entirely.
 `aikb check` also reports installed copies of these surfaces that have drifted
 away from the checkout. When it does, tell the operator to re-run the installer
 bootstrap so the instructions you are reading match the repository.
+
+## Capture checkpoints
+
+Durable knowledge is not captured by noticing a gap in passing. Evaluate capture
+at four points, and otherwise leave it alone:
+
+1. an authoritative check just went from failing to passing;
+2. the operator corrected, overrode, or redirected the work;
+3. the same non-obvious workaround repeated, or a consulted claim proved wrong,
+   incomplete, or misrouted;
+4. an approach was abandoned for a characterized reason.
+
+Operator correction is the strongest signal and the most often discarded. Each
+checkpoint ends in one of three outcomes: propose a durable bridge, record that
+nothing durable was learned, or report the candidate gap without acting because
+operator intent does not currently include harness modification. A checkpoint
+that yields nothing is the expected outcome, not a failure to find something.
+
+Consult `knowledge.harness.evolution.capture-triggers` before acting on one.
 
 ## Repository maintenance
 

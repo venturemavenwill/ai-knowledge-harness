@@ -622,6 +622,66 @@
       "claims": [
         {
           "authority": "hand-authored",
+          "claim_id": "method.harness.capture-triggers",
+          "claim_ref": "method.harness.capture-triggers@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "A knowledge harness accumulates agent-originated knowledge only when capture is evaluated at defined checkpoints, because agents reliably retain nothing when retention depends on spontaneously noticing that something was worth retaining.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/knowledge.harness.evolution.capture-triggers/claims/method.harness.capture-triggers--1.0.0.md",
+          "sha256": "d51d842f38e397e1824c267aef3e2e6c8c6e2e93741987a0df38573c4ab32362",
+          "status": "active",
+          "tags": [
+            "agent-learning",
+            "capture-triggers",
+            "harness-evolution",
+            "operator-correction",
+            "reflection-cadence",
+            "self-improvement"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "deciding whether an agent should propose a durable harness change rather than waiting for the operator to notice the gap",
+        "primary work has just passed its authoritative check, been corrected by the operator, or repeated a workaround, and no decision has been made about retaining what was learned"
+      ],
+      "entry_points": [
+        "claims/method.harness.capture-triggers--1.0.0.md"
+      ],
+      "extends": "knowledge.harness.evolution",
+      "kind": "capability-procedure",
+      "lineage": [
+        "knowledge.systems.integrity",
+        "knowledge.harness.evolution",
+        "knowledge.harness.evolution.capture-triggers"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/knowledge.harness.evolution.capture-triggers/manifests/0001.json",
+        "sha256": "c11536be8f8c6d6823fc2ce843e89aa5c2056a80af79cb8a8e49aa24b18fbfe7",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/knowledge.harness.evolution.capture-triggers/manifests/0001.json",
+          "sha256": "c11536be8f8c6d6823fc2ce843e89aa5c2056a80af79cb8a8e49aa24b18fbfe7",
+          "supersedes": null
+        }
+      ],
+      "namespace": "knowledge.harness.evolution.capture-triggers",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Reusable-capability capture triggers"
+    },
+    {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
+          "authority": "hand-authored",
           "claim_id": "method.public-repository.deep-analysis",
           "claim_ref": "method.public-repository.deep-analysis@1.0.0",
           "confidence": null,

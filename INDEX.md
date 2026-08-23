@@ -31,6 +31,7 @@ aikb check
 | [`guard.output.text-integrity`](namespaces/guard.output.text-integrity/manifests/0002.json) | capability-procedure | - | 1 |
 | [`knowledge.finance.evidence-synthesis`](namespaces/knowledge.finance.evidence-synthesis/manifests/0002.json) | capability-procedure | - | 1 |
 | [`knowledge.harness.evolution`](namespaces/knowledge.harness.evolution/manifests/0002.json) | working-discipline | knowledge.systems.integrity | 1 |
+| [`knowledge.harness.evolution.capture-triggers`](namespaces/knowledge.harness.evolution.capture-triggers/manifests/0001.json) | capability-procedure | knowledge.harness.evolution | 1 |
 | [`knowledge.harness.evolution.public-repositories`](namespaces/knowledge.harness.evolution.public-repositories/manifests/0001.json) | capability-procedure | knowledge.harness.evolution | 1 |
 | [`knowledge.systems.integrity`](namespaces/knowledge.systems.integrity/manifests/0002.json) | design-substrate | - | 1 |
 | [`reasoning.rule-induction.grid`](namespaces/reasoning.rule-induction.grid/manifests/0002.json) | capability-procedure | - | 1 |
@@ -166,6 +167,20 @@ Collaborative harness evolution
   - contributing knowledge or tooling learned with different models, tools, or grounding sources
 - **Claims:**
   - [`method.knowledge.harness.evidence-gated-improvement@1.0.0`](namespaces/knowledge.harness.evolution/claims/method.knowledge.harness.evidence-gated-improvement--1.0.0.md) [hand-authored; active] — A shared AI knowledge harness improves safely when agents convert verified reusable gaps into isolated, evidence-retaining, append-only pull requests while excluding sensitive and project-specific material.
+
+## `knowledge.harness.evolution.capture-triggers`
+
+Reusable-capability capture triggers
+
+- **Kind:** capability-procedure
+- **Authority:** hand-authored-unmeasured
+- **Extends:** knowledge.harness.evolution
+- **Lineage:** knowledge.systems.integrity -> knowledge.harness.evolution -> knowledge.harness.evolution.capture-triggers
+- **Consult when:**
+  - deciding whether an agent should propose a durable harness change rather than waiting for the operator to notice the gap
+  - primary work has just passed its authoritative check, been corrected by the operator, or repeated a workaround, and no decision has been made about retaining what was learned
+- **Claims:**
+  - [`method.harness.capture-triggers@1.0.0`](namespaces/knowledge.harness.evolution.capture-triggers/claims/method.harness.capture-triggers--1.0.0.md) [hand-authored; active] — A knowledge harness accumulates agent-originated knowledge only when capture is evaluated at defined checkpoints, because agents reliably retain nothing when retention depends on spontaneously noticing that something was worth retaining.
 
 ## `knowledge.harness.evolution.public-repositories`
 
