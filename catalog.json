@@ -428,6 +428,30 @@
             "pattern-matching"
           ],
           "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "spec.guard.autonomy.whole-action-authorization",
+          "claim_ref": "spec.guard.autonomy.whole-action-authorization@1.1.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "An authorization predicate is sound when every executable behavior admitted by its accepted input language stays within the grant; exact matching is one sufficient construction, but total character-language restrictions, verified parsing, clause decomposition, and canonicalized containment can also provide whole-action coverage.",
+          "generation": 2,
+          "parent_refs": [
+            "spec.guard.autonomy.whole-action-authorization@1.0.0"
+          ],
+          "path": "namespaces/guard.autonomy.tool-intent/claims/spec.guard.autonomy.whole-action-authorization--1.1.0.md",
+          "sha256": "b6a7bf5dd0f43ed64cc4cb716e7b6e49aac1e1130b6c7778e2c84bfd1dec19d2",
+          "status": "active",
+          "tags": [
+            "allow-list",
+            "authorization",
+            "empirical-correction",
+            "fail-closed",
+            "guard",
+            "pattern-matching"
+          ],
+          "version": "1.1.0"
         }
       ],
       "consult_when": [
@@ -437,7 +461,7 @@
       ],
       "entry_points": [
         "claims/spec.guard.autonomy.tool-intent--1.0.0.md",
-        "claims/spec.guard.autonomy.whole-action-authorization--1.0.0.md"
+        "claims/spec.guard.autonomy.whole-action-authorization--1.1.0.md"
       ],
       "extends": null,
       "kind": "capability-procedure",
@@ -445,10 +469,10 @@
         "guard.autonomy.tool-intent"
       ],
       "manifest": {
-        "generation": 3,
-        "path": "namespaces/guard.autonomy.tool-intent/manifests/0003.json",
-        "sha256": "77c6480740417e870502e6b14ff177627086eea1260068b79cc306c404a11391",
-        "supersedes": "manifests/0002.json"
+        "generation": 4,
+        "path": "namespaces/guard.autonomy.tool-intent/manifests/0004.json",
+        "sha256": "ee4e78f61b72a0fc53dbe0b00d6a97349d73d0ea732b75c7fb7023f890929184",
+        "supersedes": "manifests/0003.json"
       },
       "manifest_history": [
         {
@@ -468,6 +492,12 @@
           "path": "namespaces/guard.autonomy.tool-intent/manifests/0003.json",
           "sha256": "77c6480740417e870502e6b14ff177627086eea1260068b79cc306c404a11391",
           "supersedes": "manifests/0002.json"
+        },
+        {
+          "generation": 4,
+          "path": "namespaces/guard.autonomy.tool-intent/manifests/0004.json",
+          "sha256": "ee4e78f61b72a0fc53dbe0b00d6a97349d73d0ea732b75c7fb7023f890929184",
+          "supersedes": "manifests/0003.json"
         }
       ],
       "namespace": "guard.autonomy.tool-intent",
