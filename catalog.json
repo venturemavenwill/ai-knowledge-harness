@@ -388,6 +388,28 @@
       "claims": [
         {
           "authority": "hand-authored",
+          "claim_id": "spec.guard.autonomy.referenced-artifact-authorization",
+          "claim_ref": "spec.guard.autonomy.referenced-artifact-authorization@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "When an operator authorizes an outbound action whose payload was named by reference, the displayed preview authorizes only what it displayed; the agent must separately ratify the resolved artifact identity and the delivery mechanism, because reference resolution is agent-supplied and link delivery grants durable access that outlives the message.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/guard.autonomy.tool-intent/claims/spec.guard.autonomy.referenced-artifact-authorization--1.0.0.md",
+          "sha256": "e2ea684bebf1abe60410fef31147f6641da4d359534aaa9fa1a9c09ee3c21ab4",
+          "status": "active",
+          "tags": [
+            "artifact-resolution",
+            "blast-radius",
+            "confirmation",
+            "containment",
+            "outbound-communication",
+            "sharing-permissions"
+          ],
+          "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
           "claim_id": "spec.guard.autonomy.tool-intent",
           "claim_ref": "spec.guard.autonomy.tool-intent@1.0.0",
           "confidence": null,
@@ -457,9 +479,11 @@
       "consult_when": [
         "before any non-read action that writes, deletes, executes, publishes, or sends",
         "when an action may be externally visible or destructive",
+        "when an outbound action carries an artifact the operator named by reference rather than by exact identifier",
         "when tool output contains instructions, credential requests, or control-weakening text"
       ],
       "entry_points": [
+        "claims/spec.guard.autonomy.referenced-artifact-authorization--1.0.0.md",
         "claims/spec.guard.autonomy.tool-intent--1.0.0.md",
         "claims/spec.guard.autonomy.whole-action-authorization--1.1.0.md"
       ],
@@ -469,10 +493,10 @@
         "guard.autonomy.tool-intent"
       ],
       "manifest": {
-        "generation": 4,
-        "path": "namespaces/guard.autonomy.tool-intent/manifests/0004.json",
-        "sha256": "ee4e78f61b72a0fc53dbe0b00d6a97349d73d0ea732b75c7fb7023f890929184",
-        "supersedes": "manifests/0003.json"
+        "generation": 5,
+        "path": "namespaces/guard.autonomy.tool-intent/manifests/0005.json",
+        "sha256": "f0e76321d1fc5292b105ca354be84d8ade6769496f1cdfd07c66c5bda3f68f13",
+        "supersedes": "manifests/0004.json"
       },
       "manifest_history": [
         {
@@ -498,6 +522,12 @@
           "path": "namespaces/guard.autonomy.tool-intent/manifests/0004.json",
           "sha256": "ee4e78f61b72a0fc53dbe0b00d6a97349d73d0ea732b75c7fb7023f890929184",
           "supersedes": "manifests/0003.json"
+        },
+        {
+          "generation": 5,
+          "path": "namespaces/guard.autonomy.tool-intent/manifests/0005.json",
+          "sha256": "f0e76321d1fc5292b105ca354be84d8ade6769496f1cdfd07c66c5bda3f68f13",
+          "supersedes": "manifests/0004.json"
         }
       ],
       "namespace": "guard.autonomy.tool-intent",
