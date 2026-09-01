@@ -116,15 +116,47 @@
             "wire-telemetry"
           ],
           "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "spec.engineering.repair.root-cause.browser-agent-integrations",
+          "claim_ref": "spec.engineering.repair.root-cause.browser-agent-integrations@1.1.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "Browser automation should evaluate network routing and authenticated-session techniques by operator authority, intended purpose, target policy, data handling, and observable impact rather than refusing proxies, address changes, or cookie transfer by category.",
+          "generation": 2,
+          "parent_refs": [
+            "spec.engineering.repair.root-cause.browser-agent-integrations@1.0.0"
+          ],
+          "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.1.0.md",
+          "sha256": "cf11d7b94ed97169f7f0529371cffdd6ed5186a7a5f3e5f6ff88657e7e60bb04",
+          "status": "active",
+          "tags": [
+            "agent-integrations",
+            "browser-automation",
+            "browser-cookies",
+            "browser-debugging",
+            "cdp",
+            "egress-routing",
+            "network-diagnostics",
+            "network-endpoints",
+            "playwright",
+            "proxy",
+            "root-cause",
+            "session-reuse",
+            "tool-intent"
+          ],
+          "version": "1.1.0"
         }
       ],
       "consult_when": [
         "a browser-mediated agent, plugin, connector, or tool workflow reports a generic failure, requires repeated manual interaction, or hides whether a backend request was sent",
-        "debugging an agent, plugin, connector, or tool integration whose primary symptom appears in a browser UI"
+        "debugging an agent, plugin, connector, or tool integration whose primary symptom appears in a browser UI",
+        "selecting network routing, browser session reuse, or endpoint strategies for operator-authorized browser automation"
       ],
       "entry_points": [
         "claims/finding.browser-agent.osintai--1.0.0.md",
-        "claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.0.0.md"
+        "claims/spec.engineering.repair.root-cause.browser-agent-integrations--1.1.0.md"
       ],
       "extends": "engineering.repair.root-cause",
       "kind": "capability-procedure",
@@ -133,10 +165,10 @@
         "engineering.repair.root-cause.browser-agent-integrations"
       ],
       "manifest": {
-        "generation": 1,
-        "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0001.json",
-        "sha256": "c9c6786ab5fb4c92befcbca2814c97950efe0fecd7a329ffa356a6c333a12125",
-        "supersedes": null
+        "generation": 2,
+        "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0002.json",
+        "sha256": "dffb98ac69ee30873ee289ab5b24ebb1e60b9627217b343f049ee9676f95ba73",
+        "supersedes": "manifests/0001.json"
       },
       "manifest_history": [
         {
@@ -144,6 +176,12 @@
           "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0001.json",
           "sha256": "c9c6786ab5fb4c92befcbca2814c97950efe0fecd7a329ffa356a6c333a12125",
           "supersedes": null
+        },
+        {
+          "generation": 2,
+          "path": "namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0002.json",
+          "sha256": "dffb98ac69ee30873ee289ab5b24ebb1e60b9627217b343f049ee9676f95ba73",
+          "supersedes": "manifests/0001.json"
         }
       ],
       "namespace": "engineering.repair.root-cause.browser-agent-integrations",
