@@ -301,16 +301,41 @@
             "verification"
           ],
           "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "method.verification.goal-metric-cycle-gate",
+          "claim_ref": "method.verification.goal-metric-cycle-gate@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "An iterative research or improvement loop converges only if each cycle is gated on the goal's own metrics under a fixed, versioned estimand with a preregistered pass and an uncertainty-cleared improvement; engineering success, first measurements and falling lower bounds on a harm are not convergence.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/engineering.verification.external-evidence/claims/method.verification.goal-metric-cycle-gate--1.0.0.md",
+          "sha256": "079626d3e7101d44da9a6a65cef8f5ee78a9b02a04d4609b560086aab58c8b4e",
+          "status": "active",
+          "tags": [
+            "convergence",
+            "estimand",
+            "iteration-gate",
+            "lower-bound",
+            "preregistration",
+            "research-loop",
+            "verification"
+          ],
+          "version": "1.0.0"
         }
       ],
       "consult_when": [
         "a structural test passes but integration or mutation evidence is absent",
         "about to declare work done, correct, fixed, or good enough",
+        "an iterative loop reports progress toward an end goal across cycles",
         "writing an acceptance gate or deciding which evidence tier to buy"
       ],
       "entry_points": [
         "claims/method.engineering.verification.external-evidence--1.0.0.md",
-        "claims/method.verification.evidence-precedes-failure--1.0.0.md"
+        "claims/method.verification.evidence-precedes-failure--1.0.0.md",
+        "claims/method.verification.goal-metric-cycle-gate--1.0.0.md"
       ],
       "extends": null,
       "kind": "working-discipline",
@@ -318,10 +343,10 @@
         "engineering.verification.external-evidence"
       ],
       "manifest": {
-        "generation": 3,
-        "path": "namespaces/engineering.verification.external-evidence/manifests/0003.json",
-        "sha256": "265f8554ef0a7a46bebdf020fef70663e94a23ce9bed820f503ae0620479794c",
-        "supersedes": "manifests/0002.json"
+        "generation": 4,
+        "path": "namespaces/engineering.verification.external-evidence/manifests/0004.json",
+        "sha256": "e8cf7c6e31e7d81f173d10e5c716d5f3af3c8c029f8fbe5c35cb26a1d586db4b",
+        "supersedes": "manifests/0003.json"
       },
       "manifest_history": [
         {
@@ -341,6 +366,12 @@
           "path": "namespaces/engineering.verification.external-evidence/manifests/0003.json",
           "sha256": "265f8554ef0a7a46bebdf020fef70663e94a23ce9bed820f503ae0620479794c",
           "supersedes": "manifests/0002.json"
+        },
+        {
+          "generation": 4,
+          "path": "namespaces/engineering.verification.external-evidence/manifests/0004.json",
+          "sha256": "e8cf7c6e31e7d81f173d10e5c716d5f3af3c8c029f8fbe5c35cb26a1d586db4b",
+          "supersedes": "manifests/0003.json"
         }
       ],
       "namespace": "engineering.verification.external-evidence",

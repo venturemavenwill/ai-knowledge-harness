@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "engineering.verification.external-evidence",
+  "generation": 4,
+  "supersedes": "manifests/0003.json",
+  "title": "External evidence and verification ladders",
+  "kind": "working-discipline",
+  "authority": "reference-only",
+  "extends": null,
+  "consult_when": [
+    "about to declare work done, correct, fixed, or good enough",
+    "writing an acceptance gate or deciding which evidence tier to buy",
+    "a structural test passes but integration or mutation evidence is absent",
+    "an iterative loop reports progress toward an end goal across cycles"
+  ],
+  "routing_summary": "Declaring work done/fixed or writing a gate",
+  "capability_summary": "Require independent evidence before declaring work complete.",
+  "entry_points": [
+    "claims/method.engineering.verification.external-evidence--1.0.0.md",
+    "claims/method.verification.evidence-precedes-failure--1.0.0.md",
+    "claims/method.verification.goal-metric-cycle-gate--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}
