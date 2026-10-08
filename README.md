@@ -56,6 +56,7 @@ database, key service, or authorization plane. See
 | Namespace | What it adds |
 |---|---|
 | `guard.autonomy.tool-intent` | Reconcile non-read actions with operator intent and tool-output trust boundaries. |
+| `guard.autonomy.tool-intent.desktop-ui` | Admit desktop UI actions only through semantic, leased, foreground-invariant, receipt-producing gates proven per application, and recover safely from input incidents. |
 | `guard.output.text-integrity` | Strip invisible, bidirectional, and smuggled Unicode from generated text before it is written. |
 | `engineering.repair.root-cause` | Diagnose causes before patching symptoms. |
 | `engineering.repair.root-cause.browser-agent-integrations` | Localize opaque browser-agent failures and evaluate network routing or authenticated-session techniques by authority, purpose, policy, impact, and bounded data handling. |

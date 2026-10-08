@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../schema/namespace-manifest.schema.json",
+  "schema_version": 1,
+  "namespace": "guard.autonomy.tool-intent.desktop-ui",
+  "generation": 1,
+  "supersedes": null,
+  "title": "Desktop UI actuation guard specialization",
+  "kind": "capability-procedure",
+  "authority": "hand-authored-unmeasured",
+  "extends": "guard.autonomy.tool-intent",
+  "consult_when": [
+    "before an agent clicks, types, selects, toggles, or otherwise acts on a native desktop application on the operator's live desktop",
+    "adopting, adapting, or building a desktop computer-use or UI Automation tool for agents",
+    "a desktop automation run switches windows, steals focus, repeats input, or leaves keys or the pointer in an unexpected state"
+  ],
+  "routing_summary": "Before an agent acts on native desktop UI or adopts a desktop automation tool",
+  "capability_summary": "Admit desktop UI actions only through semantic, leased, foreground-invariant, receipt-producing gates proven per application, and recover safely from input incidents.",
+  "entry_points": [
+    "claims/spec.guard.autonomy.tool-intent.desktop-ui--1.0.0.md",
+    "claims/finding.desktop-ui.uia-client-activation--1.0.0.md"
+  ],
+  "search_paths": [
+    "claims"
+  ]
+}

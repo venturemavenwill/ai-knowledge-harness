@@ -578,6 +578,93 @@
       "authority": "hand-authored-unmeasured",
       "claims": [
         {
+          "authority": "primary-measurement",
+          "claim_id": "finding.desktop-ui.uia-client-activation",
+          "claim_ref": "finding.desktop-ui.uia-client-activation@1.0.0",
+          "confidence": null,
+          "confidence_method": "single-machine controlled experiment: isolated per-action probes on freshly launched test-owned windows, in-target window-message and managed-stack logging, a no-pattern-call control, an alternate-parent launch control, and two independent repetitions per client; no numeric confidence across machines or frameworks",
+          "expression": "On Windows 11 25H2 with a .NET 8 WPF window that is designed never to activate, every UI Automation pattern action issued through the managed System.Windows.Automation client activated the target window, because the provider received a UI Automation focus request before the action; the same actions issued through the native COM IUIAutomation client delivered their effects with no activation and no focus request.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/guard.autonomy.tool-intent.desktop-ui/claims/finding.desktop-ui.uia-client-activation--1.0.0.md",
+          "sha256": "d445b4af84b25e4461acfc63531c5c38e25901255608d5d5989dbca1ac8deec2",
+          "status": "active",
+          "tags": [
+            "computer-use",
+            "desktop-automation",
+            "focus-stealing",
+            "foreground-window",
+            "ui-automation",
+            "uiautomationclient",
+            "windows",
+            "wpf"
+          ],
+          "version": "1.0.0"
+        },
+        {
+          "authority": "hand-authored",
+          "claim_id": "spec.guard.autonomy.tool-intent.desktop-ui",
+          "claim_ref": "spec.guard.autonomy.tool-intent.desktop-ui@1.0.0",
+          "confidence": null,
+          "confidence_method": "hand-authored-unmeasured",
+          "expression": "An agent may act on native desktop UI on an operator's live desktop only through semantic accessibility actions that are disabled by default, admitted per application and action by an allowlist backed by a live activation probe, bound to a single-use observation lease, revalidated against element identity and an unchanged, non-target foreground window immediately before acting, serialized, never retried automatically, reported as a typed receipt, and halted by a kill switch that trips on any foreground change.",
+          "generation": 1,
+          "parent_refs": [],
+          "path": "namespaces/guard.autonomy.tool-intent.desktop-ui/claims/spec.guard.autonomy.tool-intent.desktop-ui--1.0.0.md",
+          "sha256": "4afc3fb1942cd35a6460b577b3ad6ca33ff04e998221b1c5faa7a3402996fe3c",
+          "status": "active",
+          "tags": [
+            "computer-use",
+            "desktop-automation",
+            "foreground-window",
+            "kill-switch",
+            "observation-lease",
+            "receipts",
+            "ui-automation",
+            "windows"
+          ],
+          "version": "1.0.0"
+        }
+      ],
+      "consult_when": [
+        "a desktop automation run switches windows, steals focus, repeats input, or leaves keys or the pointer in an unexpected state",
+        "adopting, adapting, or building a desktop computer-use or UI Automation tool for agents",
+        "before an agent clicks, types, selects, toggles, or otherwise acts on a native desktop application on the operator's live desktop"
+      ],
+      "entry_points": [
+        "claims/finding.desktop-ui.uia-client-activation--1.0.0.md",
+        "claims/spec.guard.autonomy.tool-intent.desktop-ui--1.0.0.md"
+      ],
+      "extends": "guard.autonomy.tool-intent",
+      "kind": "capability-procedure",
+      "lineage": [
+        "guard.autonomy.tool-intent",
+        "guard.autonomy.tool-intent.desktop-ui"
+      ],
+      "manifest": {
+        "generation": 1,
+        "path": "namespaces/guard.autonomy.tool-intent.desktop-ui/manifests/0001.json",
+        "sha256": "b7924b17a7d609df98ed2098e693af2ede3cb014ab9b97ba4dd5f2f0b4dcae53",
+        "supersedes": null
+      },
+      "manifest_history": [
+        {
+          "generation": 1,
+          "path": "namespaces/guard.autonomy.tool-intent.desktop-ui/manifests/0001.json",
+          "sha256": "b7924b17a7d609df98ed2098e693af2ede3cb014ab9b97ba4dd5f2f0b4dcae53",
+          "supersedes": null
+        }
+      ],
+      "namespace": "guard.autonomy.tool-intent.desktop-ui",
+      "search_paths": [
+        "claims"
+      ],
+      "title": "Desktop UI actuation guard specialization"
+    },
+    {
+      "authority": "hand-authored-unmeasured",
+      "claims": [
+        {
           "authority": "hand-authored",
           "claim_id": "spec.guard.output.text-integrity",
           "claim_ref": "spec.guard.output.text-integrity@1.0.0",
