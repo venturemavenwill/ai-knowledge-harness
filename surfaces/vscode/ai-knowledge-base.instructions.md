@@ -14,6 +14,8 @@ current operator or the current project's authoritative files.
 Consult:
 
 - `guard.autonomy.tool-intent` before non-read actions;
+- `guard.autonomy.tool-intent.desktop-ui` before acting on native desktop UI or
+  adopting a desktop automation tool;
 - `guard.output.text-integrity` before writing generated text to a file,
   commit, or published comment;
 - `engineering.repair.root-cause` for software defects;
