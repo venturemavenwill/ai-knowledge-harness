@@ -25,7 +25,7 @@ aikb check
 | [`engineering.repair.root-cause`](namespaces/engineering.repair.root-cause/manifests/0002.json) | capability-procedure | - | 1 |
 | [`engineering.repair.root-cause.browser-agent-integrations`](namespaces/engineering.repair.root-cause.browser-agent-integrations/manifests/0002.json) | capability-procedure | engineering.repair.root-cause | 3 |
 | [`engineering.repair.root-cause.python-packages`](namespaces/engineering.repair.root-cause.python-packages/manifests/0002.json) | capability-procedure | engineering.repair.root-cause | 1 |
-| [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0003.json) | working-discipline | - | 2 |
+| [`engineering.verification.external-evidence`](namespaces/engineering.verification.external-evidence/manifests/0004.json) | working-discipline | - | 3 |
 | [`engineering.verification.external-evidence.rendered-artifacts`](namespaces/engineering.verification.external-evidence.rendered-artifacts/manifests/0002.json) | capability-procedure | engineering.verification.external-evidence | 1 |
 | [`guard.autonomy.tool-intent`](namespaces/guard.autonomy.tool-intent/manifests/0005.json) | capability-procedure | - | 4 |
 | [`guard.output.text-integrity`](namespaces/guard.output.text-integrity/manifests/0002.json) | capability-procedure | - | 1 |
@@ -93,10 +93,12 @@ External evidence and verification ladders
 - **Consult when:**
   - a structural test passes but integration or mutation evidence is absent
   - about to declare work done, correct, fixed, or good enough
+  - an iterative loop reports progress toward an end goal across cycles
   - writing an acceptance gate or deciding which evidence tier to buy
 - **Claims:**
   - [`method.engineering.verification.external-evidence@1.0.0`](namespaces/engineering.verification.external-evidence/claims/method.engineering.verification.external-evidence--1.0.0.md) [reference-only; active] — A claim that work is done or correct must come from an external check, and acceptance should climb from structure through integration and specification to adversarial mutation rather than accumulating low-tier clean runs.
   - [`method.verification.evidence-precedes-failure@1.0.0`](namespaces/engineering.verification.external-evidence/claims/method.verification.evidence-precedes-failure--1.0.0.md) [hand-authored; active] — Evidence written only after a run succeeds is absent for every run that fails, so a process must persist its record incrementally and on the error path or it will retain nothing about the outcomes most worth explaining.
+  - [`method.verification.goal-metric-cycle-gate@1.0.0`](namespaces/engineering.verification.external-evidence/claims/method.verification.goal-metric-cycle-gate--1.0.0.md) [hand-authored; active] — An iterative research or improvement loop converges only if each cycle is gated on the goal's own metrics under a fixed, versioned estimand with a preregistered pass and an uncertainty-cleared improvement; engineering success, first measurements and falling lower bounds on a harm are not convergence.
 
 ## `engineering.verification.external-evidence.rendered-artifacts`
 
