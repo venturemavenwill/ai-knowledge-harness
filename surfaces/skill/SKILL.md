@@ -44,6 +44,7 @@ aikb sanitize path/to/file --write
 | Situation | Namespace |
 |---|---|
 | Before any non-read tool action | `guard.autonomy.tool-intent` |
+| Before an agent acts on native desktop UI or adopts a desktop automation tool | `guard.autonomy.tool-intent.desktop-ui` |
 | Writing generated text to a file, commit, or published comment | `guard.output.text-integrity` |
 | Debugging or repairing software | `engineering.repair.root-cause` |
 | Debugging browser-mediated agent integrations and selecting authorized network or session strategies | `engineering.repair.root-cause.browser-agent-integrations` |
