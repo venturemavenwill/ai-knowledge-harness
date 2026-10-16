@@ -241,6 +241,61 @@ maintainer, GitHub cannot require a second approver for that maintainer's own
 pull requests; those changes are gated by CI, the append-only history check,
 and public visibility instead. Do not describe that as independent review.
 
+### 9a. Executable capture and contribution lifecycle
+
+`scripts/learning.py`, exposed through `aikb learn`, supplies the runtime missing
+from prompt-only capture guidance. Capture, publication and native scheduling
+are separate operator decisions. Bootstrap never enables them. Installed
+surfaces tell participating agents to evaluate completed interactions and the
+four capture checkpoints, submit a bounded structured summary, or count nothing
+durable. There is no universal application hook, transcript crawler, or
+background model inference. Missing event emission remains visible as missing
+checkpoint counts rather than being described as autonomous extraction.
+
+The local JSON inbox is outside the checkout and keyed by canonical repository.
+Atomic replacement and a native process lock serialize writers without a stale
+PID lock after crashes. A normalized content hash deduplicates candidates.
+Records retain phase, evidence summary, scope, uncertainty, preparation identity,
+approval hash, commit, PR receipt, and errors. Nothing-durable checkpoints retain
+only aggregate counts. Local proposals are explicitly not canonical knowledge.
+
+Preparation uses a clean default-branch checkout equal to the remote default
+branch, so an unpublished local commit cannot leak as an ancestor of a reviewed
+submission. A separate worktree contains one generated claim, a superseding
+manifest and deterministic projections. Only existing namespaces are supported;
+new namespaces, empirical authority promotion, corrections with lineage and
+executable changes use the normal manually reviewed contribution workflow.
+
+The human reviews a complete package including file bytes, Git identities,
+commit and PR text, base commit and push/PR destinations. Approval hashes bind
+all of them. Publication separately requires an opt-in and rechecks worktree
+identity, path confinement, the allowlisted changed paths, exact file and
+committed-tree content, attribution and valid projections. The worker commits
+once, pushes an explicit object without force, discovers an existing PR before
+creating one, and records failures. Submitted PRs are reconciled on later runs.
+Crashes after local commit or remote creation recover using those stable
+identities. Refreshing preparation invalidates approval and preserves the
+previous worktree.
+
+The native scheduler is explicit and per-user: Windows Task Scheduler, macOS
+launchd or Linux systemd user timers. It invokes a bounded worker with absolute
+Python/CLI/repository/store paths. Scheduler intent is persisted before mutation,
+installation is checked afterwards, and bootstrap uninstall removes a managed
+timer before removing surfaces. A separate local registry tracks custom-store
+timers by owning installation so uninstall cannot leave them running. Removal
+stops the native task before taking its worker's inbox lock. Approved source refs
+live in the preparation worktree's Git database even if another clone processes
+the shared inbox, and pushes explicitly disable automatic tag following.
+The worker never merges findings. GitHub branch
+protections, maintainer review, licensing/privacy review, and split-trust
+distribution remain independent boundaries.
+
+Regex/schema validation and hidden-character checks do not establish that a
+summary is public or true. The human disclosure attestation remains mandatory;
+model-generated proposals cannot self-attest. The inbox is local, not encrypted
+or exempt from user backup/sync policy. Native scheduler integration is portable
+code, not evidence that every desktop runtime follows the capture instructions.
+
 ## 10. Non-goals and residuals
 
 - GitHub availability and account recovery are external dependencies.

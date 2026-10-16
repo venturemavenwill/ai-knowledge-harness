@@ -1852,6 +1852,20 @@ def command_update(args: argparse.Namespace) -> int:
     return 0
 
 
+def _learning_module() -> Any:
+    path = Path(__file__).resolve().parents[1] / "scripts" / "learning.py"
+    spec = importlib.util.spec_from_file_location("aikb_learning", path)
+    if spec is None or spec.loader is None:
+        raise HarnessError(f"cannot load learning workflow: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def command_learn(args: argparse.Namespace) -> int:
+    return int(_learning_module().execute(args, sys.modules[__name__]))
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="aikb",
@@ -2000,6 +2014,7 @@ def _parser() -> argparse.ArgumentParser:
         help="do not reinstall agent surfaces after applying the update",
     )
     update_parser.set_defaults(handler=command_update)
+    _learning_module().add_parser(subparsers, command_learn)
     return parser
 
 

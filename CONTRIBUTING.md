@@ -169,6 +169,31 @@ gh pr create --repo venturemavenwill/ai-knowledge-harness --fill
 The pull request must explain the observed gap, why it generalizes, the retained
 evidence, before/after checks, safety exclusions, and remaining uncertainty.
 
+## Periodic learning contributions
+
+`aikb learn` adds a private, durable inbox and an opt-in periodic PR submitter;
+see README.md for setup, schema and platform scheduling. It does not collect
+raw interactions or bypass this contribution contract. Agents capture only
+generic summaries after verified work, and every candidate stays local until
+the human reviews `learn preview ID` and attests to exact-content public
+disclosure with `learn approve ID --sha256 HASH --public`.
+
+The worker supports new unmeasured claims in existing namespaces only.
+Corrections, new namespaces, stronger measured evidence and code changes still
+use `aikb contribute`. Generated knowledge uses append-only manifests and valid
+projections; required CI independently checks it. The submitter's approval is
+disclosure review, not independent proof of the finding. Maintainers must still
+review its value, conflicts and evidence before merging. A maintainer can enable
+normal GitHub CI-gated auto-merge for a specifically reviewed PR, but the worker
+never approves or merges its own output.
+
+Fork users choose their own push remote and retain canonical `upstream`.
+Approval binds both destinations and Git identities. If a base conflict or
+content change requires a different package, refresh preparation and obtain new
+approval; never silently rebase a package under an old approval. Local receipts
+make pending review, submission failures, rejected candidates and merged PRs
+observable rather than allowing proposals to disappear between sessions.
+
 ## Review and integration
 
 The reviewer checks:

@@ -219,6 +219,23 @@ if (-not $Uninstall) {
 }
 
 Say ''
+Say '[0a] learning automation (opt-in only)'
+if ($Uninstall) {
+    $python = Find-Python
+    & $python.Exe @($python.Prefix) (Join-Path $BinDir 'aikb.py') --repo $RepoRoot learn schedule uninstall
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Learning schedule removal failed; uninstall stopped so the worker is not orphaned.'
+    }
+}
+elseif ($Check) {
+    & $python.Exe @($python.Prefix) (Join-Path $BinDir 'aikb.py') --repo $RepoRoot learn schedule check
+    if ($LASTEXITCODE -ne 0) { Missing 'learning schedule (inspect: aikb learn status)' }
+}
+else {
+    Good 'existing learning opt-ins preserved; no capture, publication, or timer enabled by installation'
+}
+
+Say ''
 Say '[0b] repository append-only hook'
 $hooksPath = (& git -C $RepoRoot config --local --get core.hooksPath 2>$null)
 if ($Uninstall) {
