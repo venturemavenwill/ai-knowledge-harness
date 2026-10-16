@@ -56,7 +56,8 @@ def _repo_default() -> Path:
 def _write_canonical(path: Path, text: str) -> None:
     """Write UTF-8 with LF endings and exactly one trailing newline."""
     body = text.replace("\r\n", "\n").replace("\r", "\n").rstrip("\n") + "\n"
-    path.write_text(body, encoding="utf-8", newline="\n")
+    with path.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(body)
 
 
 def _load_manifests(namespace_dir: Path) -> List[Path]:

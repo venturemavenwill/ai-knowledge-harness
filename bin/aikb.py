@@ -1550,7 +1550,8 @@ def command_refresh(args: argparse.Namespace) -> int:
     for name, expected in targets:
         path = state.repo / name
         if name in stale:
-            path.write_text(expected, encoding="utf-8", newline="\n")
+            with path.open("w", encoding="utf-8", newline="\n") as stream:
+                stream.write(expected)
             print(f"wrote {path}")
         else:
             print(f"ok    {path}")

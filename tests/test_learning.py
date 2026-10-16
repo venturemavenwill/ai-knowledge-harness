@@ -44,6 +44,18 @@ def lesson(**changes):
     return {**value, **changes}
 
 
+def clean_seed(source, target):
+    subprocess.run(
+        ["git", "clone", "--quiet", "--no-hardlinks", "--no-checkout",
+         str(source), str(target)], check=True, capture_output=True,
+    )
+    # PR CI checkouts are detached and need not have a local `main` branch.
+    subprocess.run(
+        ["git", "checkout", "--quiet", "-B", "main", "HEAD"],
+        cwd=target, check=True, capture_output=True,
+    )
+
+
 class LearningCLITests(unittest.TestCase):
     def test_status_is_available_without_enabling_capture(self):
         with tempfile.TemporaryDirectory() as home:
@@ -77,10 +89,7 @@ class LearningWorkflowTests(unittest.TestCase):
         cls.seed_tmp = tempfile.TemporaryDirectory()
         cls.seed = Path(cls.seed_tmp.name) / "seed"
         # A real clean default-branch checkout, never the developer's dirty tree.
-        subprocess.run(
-            ["git", "clone", "--quiet", "--no-hardlinks", "--branch", "main",
-             "--single-branch", str(REPO), str(cls.seed)], check=True, capture_output=True,
-        )
+        clean_seed(REPO, cls.seed)
 
     @classmethod
     def tearDownClass(cls):
@@ -179,6 +188,14 @@ class LearningWorkflowTests(unittest.TestCase):
         self.assertEqual(self.workflow.store.read()["candidates"][identifier]["status"], "pending")
         self.assertEqual(self.git("status", "--porcelain"), "")
 
+    def test_clean_seed_supports_detached_ci_checkouts(self):
+        self.git("checkout", "--detach")
+        target = self.root / "detached-source-seed"
+        clean_seed(self.repo, target)
+        self.assertEqual(learning.checked(["git", "branch", "--show-current"], target), "main")
+        self.assertEqual(learning.checked(["git", "rev-parse", "HEAD"], target),
+                         self.git("rev-parse", "HEAD"))
+
     def test_capture_deduplicates_across_process_lifetimes(self):
         identifier = self.capture()
         other = learning.Workflow(self.repo, self.root / "private", api)
@@ -224,6 +241,20 @@ class LearningWorkflowTests(unittest.TestCase):
         self.assertIn('"evidence_class": "reported-summary"', claim)
         self.assertNotIn(str(self.root), claim)
         self.assertEqual(self.git("status", "--porcelain"), "")
+
+    def test_preparation_uses_python39_compatible_text_writes(self):
+        shutil.copy2(REPO / "scripts" / "new_claim.py", self.repo / "scripts" / "new_claim.py")
+        if self.git("status", "--porcelain"):
+            self.git("add", "scripts/new_claim.py")
+            self.git("commit", "-m", "Claim writer compatibility fixture")
+        identifier = self.capture()
+        original = Path.write_text
+
+        def python39_write_text(path, data, encoding=None, errors=None):
+            return original(path, data, encoding=encoding, errors=errors)
+
+        with mock.patch.object(Path, "write_text", python39_write_text):
+            self.assertIn("package", self.workflow.preview(identifier))
 
     def test_approval_requires_matching_hash(self):
         identifier, preview = self.prepare()
@@ -578,7 +609,8 @@ class LearningWorkflowTests(unittest.TestCase):
         for relative in ("bin/aikb.py", "scripts/learning.py"):
             shutil.copy2(REPO / relative, self.repo / relative)
         self.git("add", "bin/aikb.py", "scripts/learning.py")
-        self.git("commit", "-m", "Local worker integration fixture")
+        if self.git("status", "--porcelain"):
+            self.git("commit", "-m", "Local worker integration fixture")
         self.workflow.configure(None, "on", None)
         try:
             task = learning.schedule(self.workflow, "install", 60)
