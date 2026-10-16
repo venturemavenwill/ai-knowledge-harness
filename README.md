@@ -141,6 +141,160 @@ closed on a dirty checkout and fast-forwards only from the canonical remote.
 fetches the canonical default branch and creates an isolated
 `improvement/<slug>` branch and sibling worktree.
 
+## Collaborative learning that persists
+
+Earlier releases provided capture reminders and contribution worktrees, but no
+inbox, periodic worker, or submission receipts. Instructions alone did not
+constitute an autonomous learning service.
+
+The executable loop is now:
+
+```text
+active agent observes a reusable lesson -> private durable inbox
+  -> exact-content human disclosure approval -> periodic commit and pull request
+  -> maintainer review and required CI -> shared canonical knowledge
+```
+
+**There is no universal transcript monitor.** Agents that load the installed
+instructions evaluate completed interactions and the four capture checkpoints.
+They must actually call `aikb learn capture`; an application that ignores the
+instructions or has no shell/tool access is not instrumented. The worker does
+not run an LLM, mine past conversations, infer findings from counters, or invent
+new evidence. This avoids silently sending private interactions to a provider
+or public repository.
+
+### One-time setup on each participating computer
+
+Accept the executable update with `aikb update --all` after reviewing it, or run
+the updated platform bootstrap. Installation preserves opt-ins and **does not
+enable collection, publication or a background process**.
+Start new AI sessions afterwards; an already-running session may have cached
+the old instructions.
+
+```text
+aikb learn status
+aikb learn configure --capture on
+aikb learn configure --publish on --push-remote origin
+aikb learn schedule install --minutes 60
+```
+
+Capture and publication are independent. Leave publication off for local-only
+use. Publishing requires Git identity, GitHub CLI authentication, and permission
+to push a branch to the configured remote; fork users keep canonical `upstream`
+and push to their own `origin`. The timer uses the current user's credentials,
+not a stored token or privileged service. It performs a bounded `learn run` every
+hour by default: Windows Task Scheduler while logged in, macOS launchd in the
+user GUI session, or a Linux systemd user timer. Linux requires an available
+user service manager; unsupported environments fail explicitly rather than
+pretending a timer exists. Timers cannot run while the computer is asleep or
+signed out. The canonical checkout and Python executable must remain at their
+installed paths.
+
+### Capture, review and share
+
+After verified work, search existing canonical knowledge and local proposals.
+Capture only a generic, non-sensitive lesson into the private inbox. A candidate
+is a UTF-8 JSON object with exactly these string fields, passed through
+`aikb learn capture --file candidate.json` or `--file -` for stdin:
+
+```json
+{
+  "trigger": "correction",
+  "namespace": "engineering.repair.root-cause",
+  "title": "Distinguish prepared work from published work",
+  "expression": "A durable receipt must distinguish preparation from successful publication.",
+  "scope": "a worker submits an artifact to a remote service",
+  "procedure": "Persist the phase, reconcile the remote identity on retry, and retain errors.",
+  "verification": "Interrupt after submission but before the receipt; retry must not duplicate the submission.",
+  "uncertainty": "Unmeasured procedure; applicability depends on stable remote identities.",
+  "evidence": "A synthetic interruption-and-retry scenario, with no private source retained.",
+  "search_terms": "publication receipt retry"
+}
+```
+
+Triggers are `interaction`, `verified`, `correction`, `workaround`, and
+`abandoned`. No lesson is the expected result for many interactions:
+`aikb learn capture --nothing interaction` stores only a coarse count.
+`learn search "<terms>"` exposes local proposals separately from canonical
+facts; proposals never become instructions merely because they were captured.
+Do not record transcripts, credentials, customer information, private source,
+personal preferences, or third-party material you cannot redistribute.
+
+```text
+aikb learn status
+aikb learn show ID
+aikb learn preview ID
+aikb learn approve ID --sha256 HASH_FROM_PREVIEW --public
+aikb learn run
+```
+
+Preview prepares an isolated worktree from the clean canonical default branch,
+which must match its remote. It shows the **complete publication package**:
+claim, next append-only manifest, projections, Git attribution, commit message,
+PR title/body, and destinations. Related lexical matches are included for
+deduplication review; lexical matching is not semantic deduplication. Review all
+of it for privacy, evidence, transferability, license compatibility, duplication
+and wording. `--public` is an attestation of disclosure rights, not an automatic
+sensitivity detector. A model must not approve its own output.
+
+Approval binds the SHA-256 of that exact package. A changed file, remote or
+commit cannot spend an old approval. The worker commits only the approved
+knowledge paths, pushes the explicit commit to the approved URL, and creates
+one PR. Automatic follow-tags is explicitly disabled, so unreviewed local tag
+messages do not accompany that commit. It never uploads the inbox, changes executable code, force-pushes, or
+requests automatic merge. Claims are conservatively `hand-authored` and
+unmeasured with `reported-summary` evidence. A maintainer reviews and merges
+through normal branch protections; for a reviewed PR, maintainers can use
+GitHub's normal CI-gated auto-merge rather than leaving it pending indefinitely.
+Merged lessons reach other machines through the existing update mechanism.
+Human review is intentional: fully unattended public sharing of all
+interactions would defeat the privacy boundary.
+
+### Recovery and stopping
+
+```text
+aikb learn status
+aikb learn schedule status
+aikb learn preview ID --refresh
+aikb learn reject ID
+aikb learn archive
+aikb learn schedule remove
+aikb learn configure --capture off --publish off
+```
+
+Inbox state defaults to `~/.ai-knowledge-harness/learning/<canonical-repo-key>/`,
+outside the checkout, with atomic writes and an OS process lock released on
+crash. Choose `aikb learn --state-dir PATH ...` for a separate local store; keep
+it out of Git, cloud sync, and shared folders. The CLI enforces separation from
+its checkout, not a universal backup or filesystem access policy. Up to 1000
+active candidates of at most 24 KB each are retained. Exact duplicate candidates
+are coalesced while in the inbox. `archive` moves rejected/closed/merged entries
+to local archive files; archive retention and deletion remain under your control.
+
+Each pass processes at most five submissions/reconciliations and starts no new
+candidate after five minutes; individual subprocesses time out after three
+minutes. Worker failures are retained per candidate and in the last-run receipt and
+return nonzero. A repeat invocation reconciles PR identity and local commits
+instead of duplicating a successful submission. If preparation was interrupted,
+an artifact was edited, or the base is stale, inspect the error and use
+`preview ID --refresh` to prepare a new worktree and require fresh approval.
+Old worktrees are preserved, never reset or deleted automatically. A changed
+canonical branch may require updating the checkout and preparing again; the
+worker never rebases reviewed content under an old approval. Concurrent
+contributions can need maintainer conflict resolution and renewed review.
+Rejecting a published candidate cannot revoke its GitHub history.
+
+Removing a schedule stops its active worker as well as future invocations.
+Uninstall removes a managed timer before removing agent surfaces, but preserves
+the private inbox and all opt-in settings. Reinstallation does not restart that
+timer. A separate local schedule registry tracks every store owned by an
+installation, including custom `--state-dir` stores; bootstrap check/uninstall
+inspects/removes them all. `aikb learn schedule check` and `uninstall` expose
+those installation-wide operations. Inspect `learn status` for awaiting-review and submitted PRs; an empty
+last-run receipt or a zero-failure run is not proof that any model captured a
+lesson. Windows task result/history, launchd logs in the local store, and
+`journalctl --user -u aikb-learning-<key>` provide scheduler diagnostics.
+
 ## Hidden characters in generated text
 
 Model output routinely carries characters that survive copy-paste but never

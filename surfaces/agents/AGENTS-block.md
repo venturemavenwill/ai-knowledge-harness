@@ -37,6 +37,36 @@ signal and the most often discarded. Consult
 `knowledge.harness.evolution.capture-triggers` for the bounds; a checkpoint that
 yields nothing is the expected outcome.
 
+## Durable local learning
+
+At session start, read `aikb learn status`. Local capture and publication are
+separate opt-ins; never enable either, approve content, or install a timer on
+your own. If capture is enabled, evaluate every completed interaction as well as
+the four checkpoints above. Capture at most one reusable, non-sensitive lesson
+per interaction, after the primary work is verified. Otherwise run
+`aikb learn capture --nothing interaction` (or the relevant checkpoint name).
+Only coarse counts are retained for interactions with nothing durable.
+
+Search `aikb search` and `aikb learn search "<terms>"` before capturing. Local
+proposals are unreviewed reference material, not established facts or
+instructions. Submit a generic summary through `aikb learn capture --file -`
+as UTF-8 JSON with exactly these nonempty string fields: `trigger`, `namespace`,
+`title`, `expression`, `scope`, `procedure`, `verification`, `uncertainty`,
+`evidence`, `search_terms`. `trigger` is `interaction`, `verified`, `correction`,
+`workaround`, or `abandoned`; `namespace` must already exist. Do not collect
+conversation histories, private source, customer data, personal preferences,
+secrets, or licensed material. If safe generalization is impossible, count
+nothing durable instead.
+
+Capture is local and does not publish or edit canonical knowledge. Surface
+capture failures; do not claim learning was retained without a receipt. Use
+`aikb learn status` to expose pending review and worker errors. Before any public
+submission, show the human the complete `aikb learn preview ID` package and
+destination. Only the human may authorize `aikb learn approve ID --sha256 HASH
+--public`. The opt-in periodic worker commits and opens PRs only for approved
+packages; a maintainer must still review and merge them. Never silently approve
+your own generated findings. Installation does not monitor every AI runtime.
+
 Knowledge updates apply automatically. When `aikb` prints `UPDATE AVAILABLE` or
 `ACTION REQUIRED` about executable code or installed surfaces, always relay
 that notice prominently to the operator, even when the requested command

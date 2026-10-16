@@ -30,6 +30,11 @@ aikb check
 aikb update
 aikb contribute concise-gap-slug
 aikb sanitize path/to/file --write
+aikb learn status
+aikb learn search "worker"
+aikb learn capture --file -
+aikb learn capture --nothing interaction
+aikb learn preview ID
 ```
 
 `show` is confined to knowledge namespaces and documented entry points.
@@ -113,7 +118,8 @@ bootstrap so the instructions you are reading match the repository.
 ## Capture checkpoints
 
 Durable knowledge is not captured by noticing a gap in passing. Evaluate capture
-at four points, and otherwise leave it alone:
+at four points; the opt-in executable workflow below also evaluates completed
+interactions:
 
 1. an authoritative check just went from failing to passing;
 2. the operator corrected, overrode, or redirected the work;
@@ -128,6 +134,36 @@ operator intent does not currently include harness modification. A checkpoint
 that yields nothing is the expected outcome, not a failure to find something.
 
 Consult `knowledge.harness.evolution.capture-triggers` before acting on one.
+
+## Executable learning workflow
+
+At session start, inspect `aikb learn status`. Do not enable capture,
+publication, or a timer without the operator's explicit consent. If local
+capture is enabled, evaluate each completed interaction as well as the four
+checkpoints. After verified work, search canonical knowledge and
+`aikb learn search "<terms>"`; capture at most one reusable generic lesson, or
+run `aikb learn capture --nothing interaction`. A nothing-durable result stores
+only a coarse counter. Never capture raw conversations, private source, business
+data, secrets, personal preferences, or licensed material.
+
+`aikb learn capture --file -` accepts UTF-8 JSON with exactly these nonempty
+string fields: `trigger`, `namespace`, `title`, `expression`, `scope`,
+`procedure`, `verification`, `uncertainty`, `evidence`, `search_terms`.
+Triggers: `interaction`, `verified`, `correction`, `workaround`, `abandoned`.
+Use an existing namespace; evidence must be a safe generic retained-source
+summary, not a private transcript or file. All generated claims remain
+unmeasured proposals with reported-summary evidence. Local proposals are
+unreviewed reference material, never authority.
+
+Surface errors and backlog using `aikb learn status`. Show the full
+`aikb learn preview ID` package, including Git identities and destination, to
+the human before publication. Only the human may authorize
+`aikb learn approve ID --sha256 HASH --public`; never approve your own output.
+The separately enabled worker (`aikb learn run`, optionally a native per-user
+timer via `aikb learn schedule install`) commits and submits only approved
+packages. It does not merge findings or read private histories. Installing the
+harness alone neither starts a worker nor instruments every AI application.
+See README.md for setup, schema example, recovery and platform limitations.
 
 ## Repository maintenance
 

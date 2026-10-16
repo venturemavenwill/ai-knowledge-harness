@@ -227,6 +227,17 @@ if [ "$MODE" != uninstall ]; then
   "$PYTHON" "$BIN_DIR/aikb.py" --repo "$REPO_ROOT" validate --projection
 fi
 
+printf '\n[0a] learning automation (opt-in only)\n'
+if [ "$MODE" = uninstall ]; then
+  "$PYTHON" "$BIN_DIR/aikb.py" --repo "$REPO_ROOT" learn schedule uninstall
+elif [ "$MODE" = check ]; then
+  if ! "$PYTHON" "$BIN_DIR/aikb.py" --repo "$REPO_ROOT" learn schedule check; then
+    missing 'learning schedule (inspect: aikb learn status)'
+  fi
+else
+  ok 'existing learning opt-ins preserved; no capture, publication, or timer enabled by installation'
+fi
+
 printf '\n[0b] repository append-only hook\n'
 hooks_path=$(git -C "$REPO_ROOT" config --local --get core.hooksPath 2>/dev/null || true)
 if [ "$MODE" = uninstall ]; then

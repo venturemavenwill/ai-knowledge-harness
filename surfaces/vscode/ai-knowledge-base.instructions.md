@@ -52,7 +52,8 @@ it quietly.
 ## Harness improvement feedback loop
 
 Knowledge is not captured by noticing a gap in passing. Ask the question at four
-checkpoints, and otherwise leave it alone:
+checkpoints; the opt-in executable workflow below also covers completed
+interactions:
 
 1. an authoritative check just went from failing to passing;
 2. the operator corrected, overrode, or redirected the work;
@@ -75,6 +76,31 @@ isolated contribution worktree, retain safe evidence, add tests when behavior
 changes, and submit a pull request. Otherwise report the candidate gap without
 mutating the harness. Never transfer secrets, customer data, private project
 source, or licensed material.
+
+## Executable local learning
+
+At session start, read `aikb learn status`. Never turn on capture, publishing,
+or a timer without operator consent. When capture is enabled, evaluate every
+completed interaction as well as the four checkpoints above. Search canonical
+knowledge and `aikb learn search "<terms>"` first; capture at most one generic
+reusable lesson after verification, or count a nothing-durable result with
+`aikb learn capture --nothing interaction`. Do not read session histories,
+capture private source/business information/secrets/personal preferences, or
+promote a local proposal to authoritative knowledge.
+
+`aikb learn capture --file -` takes UTF-8 JSON containing exactly these nonempty
+string fields: `trigger`, `namespace`, `title`, `expression`, `scope`,
+`procedure`, `verification`, `uncertainty`, `evidence`, `search_terms`. The
+trigger is `interaction`, `verified`, `correction`, `workaround`, or `abandoned`;
+the namespace must exist. Retain only safe generic evidence summaries.
+
+Capture is local; it does not publish. Surface receipts, backlog and failures
+with `aikb learn status`. Show the complete `aikb learn preview ID` content,
+identities and destination before asking the human to authorize
+`aikb learn approve ID --sha256 HASH --public`. Never approve your own generated
+findings. A separately enabled periodic worker commits and submits only approved
+packages, leaves merge decisions to maintainers, and never scans private
+histories. Installation alone cannot observe every AI application.
 
 ## Staying current
 
