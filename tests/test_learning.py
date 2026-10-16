@@ -54,6 +54,10 @@ def clean_seed(source, target):
         ["git", "checkout", "--quiet", "-B", "main", "HEAD"],
         cwd=target, check=True, capture_output=True,
     )
+    subprocess.run(
+        ["git", "update-ref", "refs/remotes/origin/main", "HEAD"],
+        cwd=target, check=True, capture_output=True,
+    )
 
 
 class LearningCLITests(unittest.TestCase):
@@ -190,10 +194,15 @@ class LearningWorkflowTests(unittest.TestCase):
 
     def test_clean_seed_supports_detached_ci_checkouts(self):
         self.git("checkout", "--detach")
+        for reference in self.git("for-each-ref", "--format=%(refname)",
+                                  "refs/heads", "refs/remotes").splitlines():
+            self.git("update-ref", "--no-deref", "-d", reference)
         target = self.root / "detached-source-seed"
         clean_seed(self.repo, target)
         self.assertEqual(learning.checked(["git", "branch", "--show-current"], target), "main")
         self.assertEqual(learning.checked(["git", "rev-parse", "HEAD"], target),
+                         self.git("rev-parse", "HEAD"))
+        self.assertEqual(learning.checked(["git", "rev-parse", "origin/main"], target),
                          self.git("rev-parse", "HEAD"))
 
     def test_capture_deduplicates_across_process_lifetimes(self):
